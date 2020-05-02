@@ -9,34 +9,57 @@ var data =
 			{
 				"label": "Moduł 1",
 				"time": 1,
-				"color": "green",
-				"type": "module"
+				"color": "#007bff",
+				"type": "module",
+				"topics": [
+					{	
+						"label": "Temat 1",
+						"time": 0.3
+					},
+					{	
+						"label": "Temat 2",
+						"time": 0.7
+					}
+				]
 			},
 			{
 				"label": "Moduł 2",
 				"time": 2,
-				"color": "red",
-				"type": "module"
+				"color": "#dc3545",
+				"type": "module",
+				"topics": [
+					{	
+						"label": "Temat 1",
+						"time": 1.2
+					},
+					{	
+						"label": "Temat 2",
+						"time": 0.8
+					}
+				]
 			},
 			{
 				"label": "Przerwa",
 				"time": 1,
-				"color": "gray",
+				"color": "#cccccc",
 				"type": "break"
 			},
 			{
 				"label": "Moduł 3",
 				"time": 1,
-				"color": "blue",
-				"type": "module"
+				"color": "#ffc107",
+				"type": "module",
+				"topics": [
+					{	
+						"label": "Temat 1",
+						"time": 0.4
+					},
+					{	
+						"label": "Temat 2",
+						"time": 0.6
+					}
+				]
 			}
 		]
 	},
-	"colors": [
-		"#007bff",
-		"#17a2b8",
-		"#28a745",
-		"#ffc107",
-		"#dc3545"
-	]
 }

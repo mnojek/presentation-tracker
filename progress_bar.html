@@ -36,6 +36,9 @@
 #wrong_time_warning {
 	display: none;
 }
+#wrong_mod_time_warning {
+	display: none;
+}
 #pr_elapsed_time {
 	display: none;
 }
@@ -69,6 +72,16 @@ $(document).ready(function() {
 			start_times.push(starting_time)
 			starting_time += module.time / data.presentation.duration * 100;
 			modules_time_sum += module.time;
+			
+			if (module.type != 'break') {
+				var topics_time_sum = 0;
+				for (topic of module.topics) {
+					topics_time_sum += topic.time;
+				}
+				if (topics_time_sum != module.time) {
+					$('#wrong_mod_time_warning').css('display', 'block').text(`Uwaga! Suma czasu tematów z modułu '${module.label}' jest różna od czasu trwania modułu`);
+				}
+			}
 		}
 		if (modules_time_sum != data.presentation.duration){
 			$('#wrong_time_warning').css('display', 'block');
@@ -108,7 +121,44 @@ $(document).ready(function() {
 			if (first) {
 				first = false;
 				update_mod_progress_bar(module);
+				$('#current_module_label').text("Bieżący moduł: " + module.label);
 			}
+		}
+	}
+	
+	function create_break_progress_bar(module){
+		break_div = $('<div/>', {
+			class: 'progress-bar',
+			text: module.label + " ",
+			style: `width:${module.time / module.time * 100}%; background-color: #cccccc !important;`
+		});
+		break_div.appendTo('#mod_progress');
+	}
+	
+	function create_mod_progress_bars(module){
+		for (topic of module.topics){
+			topic_div = $('<div/>', {
+				class: 'progress-bar',
+				text: topic.label + " ",
+				style: `width:${topic.time / module.time * 100}%; background-color:${getRandomColor(module.color)} !important;`
+			});
+			badge = $('<span/>', {
+				class: 'badge',
+				text: topic.time + " min"
+			});
+			topic_div.append(badge);
+			topic_div.appendTo('#mod_progress');
+		}
+	}
+	
+	function update_mod_progress_bar(module) {
+		$('#mod_progress').children('.progress-bar').remove();
+		
+		if (module.type == "break") {
+			create_break_progress_bar(module);
+		}
+		else {
+			create_mod_progress_bars(module);
 		}
 	}
 	
@@ -124,63 +174,76 @@ $(document).ready(function() {
 		}
 		return current_module;
 	}
+
+	function calculate_progress(elapsed_time, duration) {
+		let duration_ms = duration * 60 * 1000;
+		let progress = (elapsed_time / duration_ms * 100);
+		return progress;
+	}
 	
-	function update_mod_progress_bar(module) {
-		$('#mod_progress_bar').css('background-color', `${module.color}`).text(module.label);
-		$('#mod_badge').text(module.time + " min")	
+	function update_elapsed_time(elapsed_time) {
+		let pr_elapsed_time = new Date(0);
+		pr_elapsed_time.setMilliseconds(elapsed_time - (60 * 60 * 1000));
+		iso_elapsed_time = pr_elapsed_time.toISOString();
+		let formattedTime = pr_elapsed_time.getHours() > 0 ? iso_elapsed_time.substr(11, 8) : iso_elapsed_time.substr(14, 5);
+		$('#pr_elapsed_time').css('display', 'block').text(formattedTime);
+	}
+	
+	function getRandomColor(color) {
+		var p = 1,
+			temp,
+			random = Math.random(),
+			result = '#';
+
+		while (p < color.length) {
+			temp = parseInt(color.slice(p, p += 2), 16)
+			temp += Math.floor((255 - temp) * random);
+			result += temp.toString(16).padStart(2, '0');
+		}
+		return result;
 	}
 
 	var start = null;
-	var pr_time = data.presentation.duration * 60 * 1000;  // duration in ms
-	var elapsed_modules = 0;
 	var last_module = null;
-
+	var elapsed_modules = 0;
+	
 	function step(timestamp) {
 		if (!start) start = timestamp;
-		let progress = timestamp - start;
-		let presentation_progress = (progress / pr_time * 100);
-		$('#pr_indicator').css('left', `${presentation_progress}%`);
-		$('#pr_elapsed_part').css('width', `${presentation_progress}%`);
+		let elapsed_time = timestamp - start;
 		
-		current_module = get_current_module(presentation_progress, start_times);
+		let pr_progress_percentage = calculate_progress(elapsed_time, data.presentation.duration);
+		$('#pr_indicator').css('left', `${pr_progress_percentage}%`);
+		$('#pr_elapsed_part').css('width', `${pr_progress_percentage}%`);
 		
+		current_module = get_current_module(pr_progress_percentage, start_times);
+
 		if (last_module && (current_module != last_module)) {
 			update_mod_progress_bar(current_module);
+			$('#current_module_label').text("Bieżący moduł: " + current_module.label);
 			elapsed_modules += last_module.time * 60 * 1000;
-			console.log(elapsed_modules);
 		}
-		let mod_progress = progress - elapsed_modules;
-		mod_duration = current_module.time * 60 * 1000;
-		let mod_progress_percent = (mod_progress / mod_duration * 100);
-		$('#mod_indicator').css('left', `${mod_progress_percent}%`);
-		$('#mod_elapsed_part').css('width', `${mod_progress_percent}%`);
-
-		$('#current_module_label').text("Bieżący moduł: " + current_module.label);
+		let mod_progress = elapsed_time - elapsed_modules;
 		
-		let elapsed_time = new Date(0);
-		elapsed_time.setMilliseconds(progress - (60 * 60 * 1000));
-		iso_elapsed_time = elapsed_time.toISOString();
-		let formattedTime = elapsed_time.getHours() > 0 ? iso_elapsed_time.substr(11, 8) : iso_elapsed_time.substr(14, 5);
+		let mod_progress_percentage = calculate_progress(mod_progress, current_module.time);
+		$('#mod_indicator').css('left', `${mod_progress_percentage}%`);
+		$('#mod_elapsed_part').css('width', `${mod_progress_percentage}%`);
 
-		$('#pr_elapsed_time').css('display', 'block').text(formattedTime);
+		update_elapsed_time(elapsed_time);
 		
-		if (progress < pr_time) window.requestAnimationFrame(step);
+		let pr_duration_ms = data.presentation.duration * 60 * 1000
+		if (elapsed_time < pr_duration_ms) window.requestAnimationFrame(step);
 		
 		last_module = current_module;
 	};
 	
 	$('#start_button').click(function() {
 		window.requestAnimationFrame(step);
-		
 	});
 });
 
 // startowanie i pauzowanie czasu
-// 2 progress bary: 1. od całego kursu, 2. od konkretnego modułu (dodanie do jsona modułów podzielonych na konkretne tematy)
-// kolory tematów w modułach powinny mieć podobne kolory co moduł https://stackoverflow.com/questions/46681852/javascript-generate-similar-random-color-shader-tint-monochromatic
-// nazwa bieżącego modułu powinna być w jego kolorze
-// dodanie linii podziału (w szarym kolorze) na modułach w widoku całego kursu w miejscach, gdzie rozpoczynają się kolejne tematy
 // poprawienie labeli modułów (większe, wyraźne)
+
 </script>
 <body>
 
@@ -188,6 +251,8 @@ $(document).ready(function() {
 	<div id="wrong_time_warning" class="alert alert-warning">
 		<strong>Uwaga!</strong> Suma czasu wszystkich modułów jest różna od czasu trwania kursu
 	</div>
+	
+	<div id="wrong_mod_time_warning" class="alert alert-warning"></div>
 
 	<h2 id="pr_title">Title</h2>
 	
@@ -214,9 +279,6 @@ $(document).ready(function() {
 	</div>
 	
 	<div id="mod_progress" class="progress">
-		<div id="mod_progress_bar" class="progress-bar" style="width: 100%">
-			<span id="mod_badge" class="badge">0 min</span>
-		</div>
 		<div id="mod_indicator"></div>
 		<div id="mod_elapsed_part"></div>
 	</div>
