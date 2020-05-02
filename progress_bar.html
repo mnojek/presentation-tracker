@@ -36,11 +36,24 @@
 #wrong_time_warning {
 	display: none;
 }
+#pr_elapsed_time {
+	display: none;
+}
 </style>
 <script>
 $(document).ready(function() {
 	$('#pr_title').text(data.presentation.title);
 	$('#pr_subtitle').text(data.presentation.subtitle);
+	$('#pr_duration').text("Długość trwania: " + data.presentation.duration);
+	let pr_date = new Date(data.presentation.date).toLocaleDateString('pl-PL', {  
+		day : 'numeric',
+		month : 'long',
+		year : 'numeric',
+		hour: '2-digit',
+		minute: '2-digit'
+	});
+	$('#pr_time').text("Termin: " + pr_date);
+	
 	var starting_time = 0;
 	var start_times = [];
 	var modules_time_sum = 0;
@@ -49,7 +62,7 @@ $(document).ready(function() {
 		modul_div = $('<div/>', {
 			class: 'progress-bar',
 			text: module.label + " ",
-			style: `width:${module.time / data.presentation.time * 100}%; background-color:${colors.pop()} !important;`
+			style: `width:${module.time / data.presentation.duration * 100}%; background-color:${colors.pop()} !important;`
 		});
 		modul_div.appendTo('#progress_parent');
 		badge = $('<span/>', {
@@ -58,28 +71,27 @@ $(document).ready(function() {
 		});
 		modul_div.append(badge);
 		start_times.push(starting_time)
-		starting_time += module.time / data.presentation.time * 100;
+		starting_time += module.time / data.presentation.duration * 100;
 		modules_time_sum += module.time;
 	}
 	
-	if (modules_time_sum != data.presentation.time){
+	if (modules_time_sum != data.presentation.duration){
 		document.getElementById("wrong_time_warning").style.display = "block";
 	}
 	
 	var start = null;
 	var indicator = document.getElementById("indicator");
 	var elapsed_part = document.getElementById("elapsed_part");
-	var pr_time = data.presentation.time * 60 * 1000;  // time in ms
+	var pr_time = data.presentation.duration * 60 * 1000;  // time in ms
 
 	function step(timestamp) {
-		var timestamp = timestamp || new Date().getTime();
 		if (!start) start = timestamp;
 		var progress = timestamp - start;
-		presentation_progress = (progress / pr_time * 100);
+		var presentation_progress = (progress / pr_time * 100);
 		indicator.style.left = presentation_progress + "%";
 		elapsed_part.style.width = presentation_progress + "%";
 		if (progress < pr_time) {
-		window.requestAnimationFrame(step);
+			window.requestAnimationFrame(step);
 		}
 		
 		for (var i = 0; i < start_times.length; i++){
@@ -91,17 +103,31 @@ $(document).ready(function() {
 			}
 		}
 		document.getElementById("current_module").innerHTML = "Bieżący moduł: " + current_module;
+		
+		console.log(progress);
+		let elapsed_time = new Date(progress - (60 * 60 * 1000));
+		console.log(elapsed_time);
+		let hours = elapsed_time.getHours();
+		console.log(hours);
+		let minutes = "0" + elapsed_time.getMinutes();
+		let seconds = "0" + elapsed_time.getSeconds();
+		let formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+		
+		let elapsed_time_elem = document.getElementById("pr_elapsed_time");
+		elapsed_time_elem.style.display = "block";
+		elapsed_time_elem.innerHTML = formattedTime;
 	};
-	//$('#start_button').click(funtion() { window.requestAnimationFrame(step); });
-	window.requestAnimationFrame(step);
-
+	
+	$('#start_button').click(function() {
+		window.requestAnimationFrame(step);
+		
+	});
+	
 });
 
-// warning, jeśli przed startem suma poszczególnych modułów jest mniejsza od czasu całego szkolenia (lub większa)
 // wyświetlanie całkowitego/upłyniętego czasu prezentacji
 // startowanie i pauzowanie czasu
 // 2 progress bary: 1. od całego kursu, 2. od konkretnego modułu (dodanie do jsona modułów podzielonych na konkretne tematy)
-// dodanie do data i wyświetlenie terminu szkolenia
 // kolory tematów w modułach powinny mieć podobne kolory co moduł https://stackoverflow.com/questions/46681852/javascript-generate-similar-random-color-shader-tint-monochromatic
 // nazwa bieżącego modułu powinna być w jego kolorze
 // dodanie linii podziału (w szarym kolorze) na modułach w widoku całego kursu w miejscach, gdzie rozpoczynają się kolejne tematy
@@ -118,8 +144,19 @@ $(document).ready(function() {
 	
 	<p id="pr_subtitle">Subtitle</p>
 	
-	<button id="start_button" type="button" class="btn btn-success">Start</button>
+	<p id="pr_duration">Presentation duration</p>
 	
+	<p id="pr_time">Presentation date</p>
+	
+	<div class="row">
+		<div class="col-lg-2">
+			<button id="start_button" type="button" class="btn btn-success">Start</button>
+		</div>
+		<div class="col-lg-10">
+			<span id="pr_elapsed_time"></span>
+		</div>
+	</div>
+
 	<h3 id="current_module">Current module</h3>
 	
 	<div id="progress_parent" class="progress">

@@ -3,7 +3,8 @@ var data =
 	"presentation": {
 		"title": "Robot Framework",
 		"subtitle": "Dzień 1",
-		"time": 5,
+		"duration": 5,
+		"date": "2020-05-03T17:30:00",
 		"modules": [
 			{
 				"label": "Moduł 1",
