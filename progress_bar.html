@@ -10,14 +10,14 @@
   <script src="presentation.js"></script>
 </head>
 <style>
-#indicator {
+#pr_indicator {
 	position: absolute;
 	left: 0%;
-	background-color: black;
 	width: 2px;
 	height: 100%;
+	background-color: black;
 }
-#elapsed_part {
+#pr_elapsed_part {
 	position: absolute;
 	opacity: 0.7;
 	width: 0%;
@@ -39,6 +39,20 @@
 #pr_elapsed_time {
 	display: none;
 }
+#mod_indicator {
+	position: absolute;
+	left: 0%;
+	width: 2px;
+	height: 100%;
+	background-color: black;
+}
+#mod_elapsed_part {
+	position: absolute;
+	opacity: 0.7;
+	width: 0%;
+	height: 100%;
+	background-color: #cccccc;
+}
 </style>
 <script>
 $(document).ready(function() {
@@ -57,7 +71,7 @@ $(document).ready(function() {
 			modules_time_sum += module.time;
 		}
 		if (modules_time_sum != data.presentation.duration){
-			$("#wrong_time_warning").css('display', 'block');
+			$('#wrong_time_warning').css('display', 'block');
 		}
 		return start_times;
 	}
@@ -77,13 +91,12 @@ $(document).ready(function() {
 	}
 	
 	function create_progress_bars(){
-		let colors = data.colors;
-		
+		let first = true;
 		for (module of data.presentation.modules){
 			modul_div = $('<div/>', {
 				class: 'progress-bar',
 				text: module.label + " ",
-				style: `width:${module.time / data.presentation.duration * 100}%; background-color:${colors.pop()} !important;`
+				style: `width:${module.time / data.presentation.duration * 100}%; background-color:${module.color} !important;`
 			});
 			badge = $('<span/>', {
 				class: 'badge',
@@ -91,12 +104,18 @@ $(document).ready(function() {
 			});
 			modul_div.append(badge);
 			modul_div.appendTo('#progress_parent');
+			
+			if (first) {
+				first = false;
+				update_mod_progress_bar(module);
+			}
 		}
 	}
 	
 	function get_current_module(progress, start_times){
+		let current_module = null;
 		for (var i = 0; i < start_times.length; i++){
-			if (progress > start_times[i]){
+			if (progress >= start_times[i]){
 				current_module = data.presentation.modules[i];
 			}
 			else {
@@ -105,27 +124,49 @@ $(document).ready(function() {
 		}
 		return current_module;
 	}
+	
+	function update_mod_progress_bar(module) {
+		$('#mod_progress_bar').css('background-color', `${module.color}`).text(module.label);
+		$('#mod_badge').text(module.time + " min")	
+	}
 
 	var start = null;
 	var pr_time = data.presentation.duration * 60 * 1000;  // duration in ms
+	var elapsed_modules = 0;
+	var last_module = null;
 
 	function step(timestamp) {
 		if (!start) start = timestamp;
 		let progress = timestamp - start;
 		let presentation_progress = (progress / pr_time * 100);
-		$('#indicator').css('left', `${presentation_progress}%`);
-		$('#elapsed_part').css('width', `${presentation_progress}%`);
+		$('#pr_indicator').css('left', `${presentation_progress}%`);
+		$('#pr_elapsed_part').css('width', `${presentation_progress}%`);
+		
+		current_module = get_current_module(presentation_progress, start_times);
+		
+		if (last_module && (current_module != last_module)) {
+			update_mod_progress_bar(current_module);
+			elapsed_modules += last_module.time * 60 * 1000;
+			console.log(elapsed_modules);
+		}
+		let mod_progress = progress - elapsed_modules;
+		mod_duration = current_module.time * 60 * 1000;
+		let mod_progress_percent = (mod_progress / mod_duration * 100);
+		$('#mod_indicator').css('left', `${mod_progress_percent}%`);
+		$('#mod_elapsed_part').css('width', `${mod_progress_percent}%`);
 
-		$("#current_module").text("Bieżący moduł: " + get_current_module(presentation_progress, start_times).label);
+		$('#current_module_label').text("Bieżący moduł: " + current_module.label);
 		
 		let elapsed_time = new Date(0);
 		elapsed_time.setMilliseconds(progress - (60 * 60 * 1000));
 		iso_elapsed_time = elapsed_time.toISOString();
 		let formattedTime = elapsed_time.getHours() > 0 ? iso_elapsed_time.substr(11, 8) : iso_elapsed_time.substr(14, 5);
 
-		$("#pr_elapsed_time").css('display', 'block').text(formattedTime);
+		$('#pr_elapsed_time').css('display', 'block').text(formattedTime);
 		
 		if (progress < pr_time) window.requestAnimationFrame(step);
+		
+		last_module = current_module;
 	};
 	
 	$('#start_button').click(function() {
@@ -165,11 +206,19 @@ $(document).ready(function() {
 		</div>
 	</div>
 
-	<h3 id="current_module">Current module</h3>
+	<h3 id="current_module_label">Current module</h3>
 	
 	<div id="progress_parent" class="progress">
-		<div id="indicator"></div>
-		<div id="elapsed_part"></div>
+		<div id="pr_indicator"></div>
+		<div id="pr_elapsed_part"></div>
+	</div>
+	
+	<div id="mod_progress" class="progress">
+		<div id="mod_progress_bar" class="progress-bar" style="width: 100%">
+			<span id="mod_badge" class="badge">0 min</span>
+		</div>
+		<div id="mod_indicator"></div>
+		<div id="mod_elapsed_part"></div>
 	</div>
 </div>
 
