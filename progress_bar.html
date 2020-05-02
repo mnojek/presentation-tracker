@@ -42,90 +42,98 @@
 </style>
 <script>
 $(document).ready(function() {
-	$('#pr_title').text(data.presentation.title);
-	$('#pr_subtitle').text(data.presentation.subtitle);
-	$('#pr_duration').text("Długość trwania: " + data.presentation.duration);
-	let pr_date = new Date(data.presentation.date).toLocaleDateString('pl-PL', {  
-		day : 'numeric',
-		month : 'long',
-		year : 'numeric',
-		hour: '2-digit',
-		minute: '2-digit'
-	});
-	$('#pr_time').text("Termin: " + pr_date);
-	
-	var starting_time = 0;
-	var start_times = [];
-	var modules_time_sum = 0;
-	var colors = data.colors;
-	for (module of data.presentation.modules){
-		modul_div = $('<div/>', {
-			class: 'progress-bar',
-			text: module.label + " ",
-			style: `width:${module.time / data.presentation.duration * 100}%; background-color:${colors.pop()} !important;`
-		});
-		modul_div.appendTo('#progress_parent');
-		badge = $('<span/>', {
-			class: 'badge',
-			text: module.time + " min"
-		});
-		modul_div.append(badge);
-		start_times.push(starting_time)
-		starting_time += module.time / data.presentation.duration * 100;
-		modules_time_sum += module.time;
-	}
-	
-	if (modules_time_sum != data.presentation.duration){
-		document.getElementById("wrong_time_warning").style.display = "block";
-	}
-	
-	var start = null;
-	var indicator = document.getElementById("indicator");
-	var elapsed_part = document.getElementById("elapsed_part");
-	var pr_time = data.presentation.duration * 60 * 1000;  // time in ms
 
-	function step(timestamp) {
-		if (!start) start = timestamp;
-		var progress = timestamp - start;
-		var presentation_progress = (progress / pr_time * 100);
-		indicator.style.left = presentation_progress + "%";
-		elapsed_part.style.width = presentation_progress + "%";
-		if (progress < pr_time) {
-			window.requestAnimationFrame(step);
+	update_labels();
+	create_progress_bars();
+	var start_times = get_modules_start_times();
+
+	function get_modules_start_times(){
+		let starting_time = 0;
+		let start_times = [];
+		let modules_time_sum = 0;
+		for (module of data.presentation.modules){
+			start_times.push(starting_time)
+			starting_time += module.time / data.presentation.duration * 100;
+			modules_time_sum += module.time;
 		}
+		if (modules_time_sum != data.presentation.duration){
+			$("#wrong_time_warning").css('display', 'block');
+		}
+		return start_times;
+	}
+
+	function update_labels(){
+		$('#pr_title').text(data.presentation.title);
+		$('#pr_subtitle').text(data.presentation.subtitle);
+		$('#pr_duration').text("Długość trwania: " + data.presentation.duration);
+		let pr_date = new Date(data.presentation.date).toLocaleDateString('pl-PL', {  
+			day : 'numeric',
+			month : 'long',
+			year : 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
+		});
+		$('#pr_time').text("Termin: " + pr_date);
+	}
+	
+	function create_progress_bars(){
+		let colors = data.colors;
 		
+		for (module of data.presentation.modules){
+			modul_div = $('<div/>', {
+				class: 'progress-bar',
+				text: module.label + " ",
+				style: `width:${module.time / data.presentation.duration * 100}%; background-color:${colors.pop()} !important;`
+			});
+			badge = $('<span/>', {
+				class: 'badge',
+				text: module.time + " min"
+			});
+			modul_div.append(badge);
+			modul_div.appendTo('#progress_parent');
+		}
+	}
+	
+	function get_current_module(progress, start_times){
 		for (var i = 0; i < start_times.length; i++){
-			if (presentation_progress > start_times[i]){
-				current_module = data.presentation.modules[i].label;
+			if (progress > start_times[i]){
+				current_module = data.presentation.modules[i];
 			}
 			else {
 				break;
 			}
 		}
-		document.getElementById("current_module").innerHTML = "Bieżący moduł: " + current_module;
+		return current_module;
+	}
+
+	var start = null;
+	var pr_time = data.presentation.duration * 60 * 1000;  // duration in ms
+
+	function step(timestamp) {
+		if (!start) start = timestamp;
+		let progress = timestamp - start;
+		let presentation_progress = (progress / pr_time * 100);
+		$('#indicator').css('left', `${presentation_progress}%`);
+		$('#elapsed_part').css('width', `${presentation_progress}%`);
+
+		$("#current_module").text("Bieżący moduł: " + get_current_module(presentation_progress, start_times).label);
 		
-		console.log(progress);
-		let elapsed_time = new Date(progress - (60 * 60 * 1000));
-		console.log(elapsed_time);
-		let hours = elapsed_time.getHours();
-		console.log(hours);
-		let minutes = "0" + elapsed_time.getMinutes();
-		let seconds = "0" + elapsed_time.getSeconds();
-		let formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+		let elapsed_time = new Date(0);
+		elapsed_time.setMilliseconds(progress - (60 * 60 * 1000));
+		iso_elapsed_time = elapsed_time.toISOString();
+		let formattedTime = elapsed_time.getHours() > 0 ? iso_elapsed_time.substr(11, 8) : iso_elapsed_time.substr(14, 5);
+
+		$("#pr_elapsed_time").css('display', 'block').text(formattedTime);
 		
-		let elapsed_time_elem = document.getElementById("pr_elapsed_time");
-		elapsed_time_elem.style.display = "block";
-		elapsed_time_elem.innerHTML = formattedTime;
+		if (progress < pr_time) window.requestAnimationFrame(step);
 	};
 	
 	$('#start_button').click(function() {
 		window.requestAnimationFrame(step);
 		
 	});
-	
 });
 
-// wyświetlanie całkowitego/upłyniętego czasu prezentacji
 // startowanie i pauzowanie czasu
 // 2 progress bary: 1. od całego kursu, 2. od konkretnego modułu (dodanie do jsona modułów podzielonych na konkretne tematy)
 // kolory tematów w modułach powinny mieć podobne kolory co moduł https://stackoverflow.com/questions/46681852/javascript-generate-similar-random-color-shader-tint-monochromatic
