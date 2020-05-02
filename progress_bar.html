@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Kurs Robot Framework</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="presentation.js"></script>
+</head>
+<style>
+#indicator {
+	position: absolute;
+	left: 0%;
+	background-color: black;
+	width: 2px;
+	height: 100%;
+}
+#elapsed_part {
+	position: absolute;
+	opacity: 0.7;
+	width: 0%;
+	height: 100%;
+	background-color: #cccccc;
+}
+.progress {
+	position: relative;
+	height: 30px !important;
+}
+.progress-bar {
+	padding: 5px;
+	font-weight: bold;
+	font-size: 14px;
+}
+#wrong_time_warning {
+	display: none;
+}
+</style>
+<script>
+$(document).ready(function() {
+	$('#pr_title').text(data.presentation.title);
+	$('#pr_subtitle').text(data.presentation.subtitle);
+	var starting_time = 0;
+	var start_times = [];
+	var modules_time_sum = 0;
+	var colors = data.colors;
+	for (module of data.presentation.modules){
+		modul_div = $('<div/>', {
+			class: 'progress-bar',
+			text: module.label + " ",
+			style: `width:${module.time / data.presentation.time * 100}%; background-color:${colors.pop()} !important;`
+		});
+		modul_div.appendTo('#progress_parent');
+		badge = $('<span/>', {
+			class: 'badge',
+			text: module.time + " min"
+		});
+		modul_div.append(badge);
+		start_times.push(starting_time)
+		starting_time += module.time / data.presentation.time * 100;
+		modules_time_sum += module.time;
+	}
+	
+	if (modules_time_sum != data.presentation.time){
+		document.getElementById("wrong_time_warning").style.display = "block";
+	}
+	
+	var start = null;
+	var indicator = document.getElementById("indicator");
+	var elapsed_part = document.getElementById("elapsed_part");
+	var pr_time = data.presentation.time * 60 * 1000;  // time in ms
+
+	function step(timestamp) {
+		var timestamp = timestamp || new Date().getTime();
+		if (!start) start = timestamp;
+		var progress = timestamp - start;
+		presentation_progress = (progress / pr_time * 100);
+		indicator.style.left = presentation_progress + "%";
+		elapsed_part.style.width = presentation_progress + "%";
+		if (progress < pr_time) {
+		window.requestAnimationFrame(step);
+		}
+		
+		for (var i = 0; i < start_times.length; i++){
+			if (presentation_progress > start_times[i]){
+				current_module = data.presentation.modules[i].label;
+			}
+			else {
+				break;
+			}
+		}
+		document.getElementById("current_module").innerHTML = "Bieżący moduł: " + current_module;
+	};
+	//$('#start_button').click(funtion() { window.requestAnimationFrame(step); });
+	window.requestAnimationFrame(step);
+
+});
+
+// warning, jeśli przed startem suma poszczególnych modułów jest mniejsza od czasu całego szkolenia (lub większa)
+// wyświetlanie całkowitego/upłyniętego czasu prezentacji
+// startowanie i pauzowanie czasu
+// 2 progress bary: 1. od całego kursu, 2. od konkretnego modułu (dodanie do jsona modułów podzielonych na konkretne tematy)
+// dodanie do data i wyświetlenie terminu szkolenia
+// kolory tematów w modułach powinny mieć podobne kolory co moduł https://stackoverflow.com/questions/46681852/javascript-generate-similar-random-color-shader-tint-monochromatic
+// nazwa bieżącego modułu powinna być w jego kolorze
+// dodanie linii podziału (w szarym kolorze) na modułach w widoku całego kursu w miejscach, gdzie rozpoczynają się kolejne tematy
+// poprawienie labeli modułów (większe, wyraźne)
+</script>
+<body>
+
+<div class="container">
+	<div id="wrong_time_warning" class="alert alert-warning">
+		<strong>Uwaga!</strong> Suma czasu wszystkich modułów jest różna od czasu trwania kursu
+	</div>
+
+	<h2 id="pr_title">Title</h2>
+	
+	<p id="pr_subtitle">Subtitle</p>
+	
+	<button id="start_button" type="button" class="btn btn-success">Start</button>
+	
+	<h3 id="current_module">Current module</h3>
+	
+	<div id="progress_parent" class="progress">
+		<div id="indicator"></div>
+		<div id="elapsed_part"></div>
+	</div>
+</div>
+
+</body>
+</html>
