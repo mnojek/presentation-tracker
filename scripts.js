@@ -76,6 +76,7 @@ function update_mod_progress_bar(module) {
 	else {
 		create_mod_progress_bars(module);
 	}
+	tag_current_module(module);
 }
 
 function get_current_module(progress, start_times, blink_flags){
@@ -139,6 +140,28 @@ function get_modules_start_times(){
 		$('#wrong_time_warning').css('display', 'block').text('Uwaga! Suma czasu wszystkich modułów jest różna od czasu trwania kursu');
 	}
 	return start_times;
+}
+
+function tag_current_module(module) {
+	$('#progress_parent').children('.progress-bar').children('a').remove();
+	let idx = -1;
+	for (var i = 0; i < data.presentation.modules.length; i++) {
+		if (data.presentation.modules[i] == module) {
+			idx = i;
+			break;
+		}
+	}
+	tooltip = $('<a/>', {
+		"href": "#",
+		"data-toggle": "tooltip",
+		"data-placement": "top",
+		"title": "Jesteś tu!"
+	});
+	$('#progress_parent').children('.progress-bar').eq(idx).wrapInner(tooltip);
+	
+	$(function () {
+		$('[data-toggle="tooltip"]').tooltip();
+	});
 }
 
 $(document).ready(function() {

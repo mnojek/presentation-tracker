@@ -12,6 +12,9 @@
 	height: 100%;
 	background-color: #cccccc;
 }
+#progress_parent {
+	margin-top: 30px;
+}
 .progress {
 	position: relative;
 	height: 30px !important;
