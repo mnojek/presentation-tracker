@@ -78,9 +78,20 @@ function update_mod_progress_bar(module) {
 	}
 }
 
-function get_current_module(progress, start_times){
+function get_current_module(progress, start_times, blink_flags){
 	let current_module = null;
+	let preblink_time = 5;
 	for (var i = 0; i < start_times.length; i++){
+		if (i != 0) {	// do not blink for the first module
+			blink_time = ((start_times[i] / 100 * data.presentation.duration * 60) - preblink_time) / 60 / data.presentation.duration * 100;  // change % module starts to time in seconds
+			if (progress >= blink_time){
+				if (blink_flags[i] == false){
+					$('body').effect("highlight", {}, 1000);
+					blink_flags[i] = true;
+				}
+			}
+		}
+		
 		if (progress >= start_times[i]){
 			current_module = data.presentation.modules[i];
 		}
@@ -136,6 +147,7 @@ $(document).ready(function() {
 	update_labels();
 	create_progress_bars();
 	var start_times = get_modules_start_times();
+	var blink_flags = Array(start_times.length).fill(false);
 
 	var start = null;
 	var last_module = null;
@@ -149,7 +161,7 @@ $(document).ready(function() {
 		$('#pr_indicator').css('left', `${pr_progress_percentage}%`);
 		$('#pr_elapsed_part').css('width', `${pr_progress_percentage}%`);
 		
-		current_module = get_current_module(pr_progress_percentage, start_times);
+		current_module = get_current_module(pr_progress_percentage, start_times, blink_flags);
 
 		if (last_module && (current_module != last_module)) {
 			update_mod_progress_bar(current_module);

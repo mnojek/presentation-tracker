@@ -1,5 +1,5 @@
 function getRandomColor(color) {
-	var p = 1,
+	let p = 1,
 		temp,
 		random = Math.random(),
 		result = '#';
@@ -13,12 +13,12 @@ function getRandomColor(color) {
 }
 
 function mins_to_time(mins) {
-	var hours = (mins / 60);
-	var rhours = Math.floor(hours);
-	var minutes = (hours - rhours) * 60;
-	var rminutes = Math.round(minutes);
+	let hours = (mins / 60);
+	let rhours = Math.floor(hours);
+	let minutes = (hours - rhours) * 60;
+	let rminutes = Math.round(minutes);
 	if (rhours > 0){
-		return rhours + "h " + rminutes + "min"
+		return rhours + " h " + rminutes + " min"
 	}
 	return rminutes + "min";
 }
