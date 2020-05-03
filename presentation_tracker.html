@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Tytuł kursu</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="data.js"></script>
+  <script src="utils.js"></script>
+  <script src="scripts.js"></script>
+</head>
+<body>
+
+<div class="container">
+	<div id="wrong_time_warning" class="alert alert-warning"></div>
+	
+	<div id="wrong_mod_time_warning" class="alert alert-warning"></div>
+
+	<h2 id="pr_title">Tytuł</h2>
+	
+	<p id="pr_subtitle">Podtytuł</p>
+	
+	<p id="pr_duration">Czas trwania</p>
+	
+	<p id="pr_time">Termin</p>
+	
+	<div class="row">
+		<div class="col-lg-2">
+			<button id="start_button" type="button" class="btn btn-success">Start</button>
+		</div>
+		<div class="col-lg-10">
+			<span id="pr_elapsed_time"></span>
+		</div>
+	</div>
+
+	<h3 id="current_module_label">Bieżący moduł</h3>
+	
+	<div id="progress_parent" class="progress">
+		<div id="pr_indicator"></div>
+		<div id="pr_elapsed_part"></div>
+	</div>
+	
+	<div id="mod_progress" class="progress">
+		<div id="mod_indicator"></div>
+		<div id="mod_elapsed_part"></div>
+	</div>
+</div>
+
+</body>
+</html>
