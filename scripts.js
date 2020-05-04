@@ -2,6 +2,7 @@
 // startowanie i pauzowanie czasu
 // obsługa zbyt podobnych kolorów tematów
 // obsługa oddzielnych dni kursu (przełącznie pomiędzy innymi htmlami i danymi zależnymi od dnia)
+// glyphicon jest nad indicator
 
 function update_labels(){
 	$(document).attr("title", data.presentation.title);
@@ -21,15 +22,30 @@ function update_labels(){
 function create_progress_bars(){
 	let first = true;
 	for (let module of data.presentation.modules){
+		let label = "";
+		let glyph = null;
+		if (module.type == "break") {
+			label = " ";
+			glyph = $('<span/>', {
+				class : 'glyphicon'
+			}).addClass('glyphicon-time');
+		}
+		else {
+			label = module.label + " ";
+		}
+		
+		let module_width = module.duration / data.presentation.duration * 100;
 		let progress_bar = $('<div/>', {
 			class: 'progress-bar',
-			text: module.label + " ",
-			style: `width:${module.duration / data.presentation.duration * 100}%; background-color:${module.color} !important;`
+			text: label,
+			style: `width:${module_width}%; background-color:${module.color} !important;`
 		});
 		let badge = $('<span/>', {
 			class: 'badge',
 			text: module.duration + " min"
 		});
+		
+		if (glyph) progress_bar.append(glyph);
 		progress_bar.append(badge);
 		progress_bar.appendTo('#pr_progress');
 		
