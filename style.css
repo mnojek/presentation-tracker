@@ -59,3 +59,11 @@ a#mod_tooltip:active {
 .jumbotron {
 	padding: 20px;
 }
+/* Remove the top border when a table is missing the header */
+.table > tbody > tr:first-child > td {
+    border: none;
+}
+/* Include the border when there's a header */
+.table > thead + tbody > tr:first-child > td {
+    border-top: 1px solid #ddd;
+}
