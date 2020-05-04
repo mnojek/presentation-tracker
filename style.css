@@ -54,5 +54,8 @@ a#mod_tooltip:hover,
 a#mod_tooltip:active {
 	text-decoration: none;
 	color: white;
-	cursor: text;
+	cursor: default;
+}
+.jumbotron {
+	padding: 20px;
 }

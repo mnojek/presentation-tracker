@@ -25,16 +25,25 @@
 		<h3 id="pr_subtitle">Podtytuł</h3>
 	</div>
 
-	<p id="pr_duration">Czas trwania</p>
-	
-	<p id="pr_time">Termin</p>
-	
+	<table class="table">
+		<tbody>
+			<tr>
+				<td style="width: 10%">Czas trwania:</td>
+				<td id="pr_duration"></td>
+			</tr>
+			<tr>
+				<td style="width: 10%">Termin:</td>
+				<td id="pr_time"></td>
+			</tr>
+		</tbody>
+	</table>
+
 	<div class="row">
 		<div class="col-lg-2">
-			<button id="start_button" type="button" class="btn btn-success">Start</button>
+			<button id="start_button" type="button" class="btn btn-success btn-block">Start</button>
 		</div>
 		<div class="col-lg-10">
-			<span id="pr_elapsed_time"></span>
+			<h5 id="pr_elapsed_time"></h5>
 		</div>
 	</div>
 	

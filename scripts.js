@@ -1,14 +1,12 @@
 // TODO:
 // startowanie i pauzowanie czasu
-// ładniejsze wyświetlanie informacji o kursie
-// wskaźnik bieżącego modułu
 // obsługa zbyt podobnych kolorów tematów
 // obsługa oddzielnych dni kursu (przełącznie pomiędzy innymi htmlami i danymi zależnymi od dnia)
 
 function update_labels(){
 	$('#pr_title').text(data.presentation.title);
 	$('#pr_subtitle').text(data.presentation.subtitle);
-	$('#pr_duration').text("Długość trwania: " + mins_to_time(data.presentation.duration));
+	$('#pr_duration').text(mins_to_time(data.presentation.duration));
 	let pr_date = new Date(data.presentation.date).toLocaleDateString('pl-PL', {  
 		day : 'numeric',
 		month : 'long',
@@ -16,7 +14,7 @@ function update_labels(){
 		hour: '2-digit',
 		minute: '2-digit'
 	});
-	$('#pr_time').text("Termin: " + pr_date);
+	$('#pr_time').text(pr_date);
 }
 
 function create_progress_bars(){
