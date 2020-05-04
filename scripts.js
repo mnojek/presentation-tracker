@@ -4,6 +4,7 @@
 // obsługa oddzielnych dni kursu (przełącznie pomiędzy innymi htmlami i danymi zależnymi od dnia)
 // glyphicon jest nad indicator
 // przesuwaj 'obecny moduł' zamiast ciągle usuwać
+// opakuj dolny progress bar z tematami w jakiegoś diva i niech 'obecny moduł' nie zawiera tekstu tylko strzałkę, która będzie pokazywać n dany moduł
 
 function update_labels(){
 	$(document).attr("title", data.presentation.title);
@@ -77,16 +78,24 @@ function create_break_progress_bar(module){
 
 function create_mod_progress_bars(module){
 	for (let topic of module.topics){
-		let topic_progress_bar = $('<div/>', {
-			class: 'progress-bar',
+		let topic_width = topic.duration / module.duration * 100;
+		
+		let topic_label_div = $('<div/>', {
+			class: 'topic_label',
 			text: topic.label + " ",
-			style: `width:${topic.duration / module.duration * 100}%; background-color:${getRandomColor(module.color)} !important;`
+			style: `width:${topic_width}%;`
 		});
 		let badge = $('<span/>', {
 			class: 'badge',
 			text: topic.duration + " min"
 		});
-		topic_progress_bar.append(badge);
+		topic_label_div.append(badge);
+		topic_label_div.appendTo('#mod_labels');
+		
+		let topic_progress_bar = $('<div/>', {
+			class: 'progress-bar',
+			style: `width:${topic_width}%; background-color:${getRandomColor(module.color)} !important;`
+		});
 		topic_progress_bar.appendTo('#mod_progress');
 	}
 }
@@ -114,6 +123,7 @@ function tag_current_module(module) {
 
 function update_mod_progress_bar(module) {
 	$('#mod_progress').children('.progress-bar').remove();
+	$('#mod_labels').children().remove();
 	if (module.type == "break") create_break_progress_bar(module);
 	else create_mod_progress_bars(module);
 	tag_current_module(module);

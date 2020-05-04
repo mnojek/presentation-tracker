@@ -31,6 +31,7 @@
 }
 #time_counter {
 	height: 35px;
+	margin-bottom: 5px;
 }
 a#mod_tooltip:link,
 a#mod_tooltip:visited,
@@ -51,17 +52,19 @@ a#mod_tooltip:active {
 .table > thead + tbody > tr:first-child > td {
     border-top: 1px solid #ddd;
 }
-.mod_label {
+.mod_label,
+.topic_label {
 	float: left;
 	text-align: center;
 	font-weight: bold;
 	font-size: 14px;
 	vertical-align: bottom;
-	height: 10px;
+	height: 20px;
 }
-#time_counter {
-	margin-bottom: 5px;
-}
-#pr_labels {
+#pr_labels,
+#mod_labels {
 	margin-top: 15px;
+}
+#mod_progress {
+	margin-top: 65px;
 }
