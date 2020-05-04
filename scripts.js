@@ -37,7 +37,6 @@ function create_progress_bars(){
 		if (first) {
 			first = false;
 			update_mod_progress_bar(module);
-			$('#current_module_label').text("Bieżący moduł: " + module.label);
 		}
 	}
 }
@@ -87,7 +86,7 @@ function get_current_module(progress, start_times, blink_flags){
 			blink_time = ((start_times[i] / 100 * data.presentation.duration * 60) - preblink_time) / 60 / data.presentation.duration * 100;  // change % module starts to time in seconds
 			if (progress >= blink_time){
 				if (blink_flags[i] == false){
-					$('body').effect("highlight", {}, 1000);
+					$('body').effect("highlight", {color: 'green'}, 1000);
 					blink_flags[i] = true;
 				}
 			}
@@ -143,7 +142,8 @@ function get_modules_start_times(){
 }
 
 function tag_current_module(module) {
-	$('#progress_parent').children('.progress-bar').children('a').remove();
+	$('#progress_parent').children('.progress-bar').children('a').contents().unwrap();
+	$('.tooltip').remove();
 	let idx = -1;
 	for (var i = 0; i < data.presentation.modules.length; i++) {
 		if (data.presentation.modules[i] == module) {
@@ -153,15 +153,13 @@ function tag_current_module(module) {
 	}
 	tooltip = $('<a/>', {
 		"href": "#",
+		"id": "mod_tooltip",
 		"data-toggle": "tooltip",
-		"data-placement": "top",
-		"title": "Jesteś tu!"
+		"data-placement": "bottom",
+		"data-container": ".container",
+		"title": "Obecny moduł"
 	});
 	$('#progress_parent').children('.progress-bar').eq(idx).wrapInner(tooltip);
-	
-	$(function () {
-		$('[data-toggle="tooltip"]').tooltip();
-	});
 }
 
 $(document).ready(function() {
@@ -188,7 +186,7 @@ $(document).ready(function() {
 
 		if (last_module && (current_module != last_module)) {
 			update_mod_progress_bar(current_module);
-			$('#current_module_label').text("Bieżący moduł: " + current_module.label);
+			$(function () { $('[data-toggle="tooltip"]').tooltip({trigger: 'manual'}).tooltip('show'); });
 			elapsed_modules += last_module.time * 60 * 1000;
 		}
 		let mod_progress = elapsed_time - elapsed_modules;
@@ -207,5 +205,6 @@ $(document).ready(function() {
 	
 	$('#start_button').click(function() {
 		window.requestAnimationFrame(step);
+		$(function () { $('[data-toggle="tooltip"]').tooltip({trigger: 'manual'}).tooltip('show'); });
 	});
 });
