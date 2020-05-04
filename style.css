@@ -1,52 +1,36 @@
-#pr_indicator {
+.indicator {
 	position: absolute;
 	left: 0%;
 	width: 2px;
 	height: 100%;
 	background-color: #222222;
 }
-#pr_elapsed_part {
+.elapsed_part {
 	position: absolute;
 	opacity: 0.7;
-	width: 0%;
 	height: 100%;
+	width: 0%;
 	background-color: #cccccc;
-}
-#progress_parent {
-	margin-top: 40px;
-	margin-bottom: 40px;
 }
 .progress {
 	position: relative;
 	height: 30px !important;
+	margin: 40px 0px 40px 0px;
 }
 .progress-bar {
 	padding: 5px;
 	font-weight: bold;
 	font-size: 14px;
 }
-#wrong_time_warning {
-	display: none;
-}
+#wrong_time_warning,
 #wrong_mod_time_warning {
 	display: none;
 }
 #pr_elapsed_time {
 	display: none;
 }
-#mod_indicator {
-	position: absolute;
-	left: 0%;
-	width: 2px;
-	height: 100%;
-	background-color: #222222;
-}
-#mod_elapsed_part {
-	position: absolute;
-	opacity: 0.7;
-	width: 0%;
-	height: 100%;
-	background-color: #cccccc;
+#time_counter {
+	height: 35px;
 }
 a#mod_tooltip:link,
 a#mod_tooltip:visited,

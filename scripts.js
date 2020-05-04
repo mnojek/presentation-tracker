@@ -31,7 +31,7 @@ function create_progress_bars(){
 			text: module.duration + " min"
 		});
 		progress_bar.append(badge);
-		progress_bar.appendTo('#progress_parent');
+		progress_bar.appendTo('#pr_progress');
 		
 		if (first) {
 			first = false;
@@ -83,7 +83,7 @@ function tag_current_module(module) {
 		"data-container": ".container",
 		"title": "Obecny moduł"
 	});
-	$('#progress_parent').children('.progress-bar').eq(idx).wrapInner(tooltip);
+	$('#pr_progress').children('.progress-bar').eq(idx).wrapInner(tooltip);
 }
 
 function update_mod_progress_bar(module) {
@@ -168,7 +168,7 @@ function get_modules_start_times(){
 }
 
 function clear_tooltips(){
-	$('#progress_parent').children('.progress-bar').children('a').contents().unwrap();
+	$('#pr_progress').children('.progress-bar').children('a').contents().unwrap();
 	$('.tooltip').remove();
 }
 
