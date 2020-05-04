@@ -3,6 +3,7 @@
 // obsługa zbyt podobnych kolorów tematów
 // obsługa oddzielnych dni kursu (przełącznie pomiędzy innymi htmlami i danymi zależnymi od dnia)
 // glyphicon jest nad indicator
+// przesuwaj 'obecny moduł' zamiast ciągle usuwać
 
 function update_labels(){
 	$(document).attr("title", data.presentation.title);
@@ -22,6 +23,21 @@ function update_labels(){
 function create_progress_bars(){
 	let first = true;
 	for (let module of data.presentation.modules){
+		let module_width = module.duration / data.presentation.duration * 100;
+		
+		let mod_label_div = $('<div/>', {
+			class: 'mod_label',
+			text: module.label + " ",
+			style: `width:${module_width}%;`
+		});
+		let badge = $('<span/>', {
+			class: 'badge',
+			text: module.duration + " min"
+		});
+		mod_label_div.append(badge);
+		mod_label_div.appendTo('#pr_labels');
+		
+		
 		let label = "";
 		let glyph = null;
 		if (module.type == "break") {
@@ -34,19 +50,13 @@ function create_progress_bars(){
 			label = module.label + " ";
 		}
 		
-		let module_width = module.duration / data.presentation.duration * 100;
+		
 		let progress_bar = $('<div/>', {
 			class: 'progress-bar',
-			text: label,
 			style: `width:${module_width}%; background-color:${module.color} !important;`
-		});
-		let badge = $('<span/>', {
-			class: 'badge',
-			text: module.duration + " min"
 		});
 		
 		if (glyph) progress_bar.append(glyph);
-		progress_bar.append(badge);
 		progress_bar.appendTo('#pr_progress');
 		
 		if (first) {
@@ -186,10 +196,13 @@ function get_modules_start_times(){
 function clear_tooltips(){
 	$('#pr_progress').children('.progress-bar').children('a').contents().unwrap();
 	$('.tooltip').remove();
+	$('#mod_tooltip').remove();
 }
 
 function refresh_tooltips(){
 	$(function () { $('[data-toggle="tooltip"]').tooltip({trigger: 'manual'}).tooltip('show'); });
+	let tooltip_top_pos = $('#mod_tooltip').offset().top + 22;
+	$('#mod_tooltip').offset({top: tooltip_top_pos});
 }
 
 function move_pr_indicator(progress) {

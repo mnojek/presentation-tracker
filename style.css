@@ -51,3 +51,17 @@ a#mod_tooltip:active {
 .table > thead + tbody > tr:first-child > td {
     border-top: 1px solid #ddd;
 }
+.mod_label {
+	float: left;
+	text-align: center;
+	font-weight: bold;
+	font-size: 14px;
+	vertical-align: bottom;
+	height: 10px;
+}
+#time_counter {
+	margin-bottom: 5px;
+}
+#pr_labels {
+	margin-top: 15px;
+}
