@@ -3,8 +3,6 @@
 // obsługa zbyt podobnych kolorów tematów
 // obsługa oddzielnych dni kursu (przełącznie pomiędzy innymi htmlami i danymi zależnymi od dnia)
 // glyphicon jest nad indicator
-// przesuwaj 'obecny moduł' zamiast ciągle usuwać
-// opakuj dolny progress bar z tematami w jakiegoś diva i niech 'obecny moduł' nie zawiera tekstu tylko strzałkę, która będzie pokazywać n dany moduł
 
 function update_labels(){
 	$(document).attr("title", data.presentation.title);
@@ -68,11 +66,26 @@ function create_progress_bars(){
 }
 
 function create_break_progress_bar(module){
+	let break_label_div = $('<div/>', {
+		class: 'topic_label',
+		text: module.label + " ",
+		style: `width:100%;`
+	});
+	let badge = $('<span/>', {
+		class: 'badge',
+		text: module.duration + " min"
+	});
+	break_label_div.append(badge);
+	break_label_div.appendTo('#mod_labels');
+	
 	let break_progress_bar = $('<div/>', {
 		class: 'progress-bar',
-		text: module.label + " ",
-		style: `width:${module.duration / module.duration * 100}%; background-color: #cccccc !important;`
+		style: `width:100%; background-color: #cccccc !important;`
 	});
+	glyph = $('<span/>', {
+		class : 'glyphicon'
+	}).addClass('glyphicon-time');
+	break_progress_bar.append(glyph);
 	break_progress_bar.appendTo('#mod_progress');
 }
 
@@ -100,25 +113,18 @@ function create_mod_progress_bars(module){
 	}
 }
 
-function tag_current_module(module) {
-	clear_tooltips();
-
-	let idx = -1;
-	for (var i = 0; i < data.presentation.modules.length; i++) {
-		if (data.presentation.modules[i] == module) {
-			idx = i;
-			break;
-		}
-	}
-	let tooltip = $('<a/>', {
-		"href": "#",
-		"id": "mod_tooltip",
-		"data-toggle": "tooltip",
-		"data-placement": "bottom",
-		"data-container": ".container",
-		"title": "Obecny moduł"
-	});
-	$('#pr_progress').children('.progress-bar').eq(idx).wrapInner(tooltip);
+function tag_current_module(module, start_times) {
+	let idx = data.presentation.modules.indexOf(module);
+	// calculate new tag position as half of current module width
+	// and adjust it by tag width
+	let does_next_idx_exists = typeof start_times[idx+1] === 'undefined';
+	let next_mod_start_time = does_next_idx_exists ? 100 : start_times[idx+1];
+	let new_tag_position = next_mod_start_time - ((next_mod_start_time - start_times[idx]) / 2);
+	let tag_width = 20;
+	$('#module_arrow').css('left', `${new_tag_position}%`).css('margin-left', `-${tag_width}px`);
+	// show tag by changing its border-color to same as module container
+	let tag_color = $('#mod_container').css('background-color');
+	$('#module_arrow').css('border-bottom-color', `${tag_color}`);
 }
 
 function update_mod_progress_bar(module) {
@@ -126,7 +132,6 @@ function update_mod_progress_bar(module) {
 	$('#mod_labels').children().remove();
 	if (module.type == "break") create_break_progress_bar(module);
 	else create_mod_progress_bars(module);
-	tag_current_module(module);
 }
 
 function blink_before_module_ends(progress, start_times, blink_flags) {
@@ -203,18 +208,6 @@ function get_modules_start_times(){
 	return start_times;
 }
 
-function clear_tooltips(){
-	$('#pr_progress').children('.progress-bar').children('a').contents().unwrap();
-	$('.tooltip').remove();
-	$('#mod_tooltip').remove();
-}
-
-function refresh_tooltips(){
-	$(function () { $('[data-toggle="tooltip"]').tooltip({trigger: 'manual'}).tooltip('show'); });
-	let tooltip_top_pos = $('#mod_tooltip').offset().top + 22;
-	$('#mod_tooltip').offset({top: tooltip_top_pos});
-}
-
 function move_pr_indicator(progress) {
 	$('#pr_indicator').css('left', `${progress}%`);
 	$('#pr_elapsed_part').css('width', `${progress}%`);
@@ -247,13 +240,16 @@ $(document).ready(function() {
 		let pr_progress_percentage = calculate_progress(elapsed_time, data.presentation.duration);
 		move_pr_indicator(pr_progress_percentage);
 		
-		let current_module = get_current_module(pr_progress_percentage, start_times);
 		blink_before_module_ends(pr_progress_percentage, start_times, blink_flags);
-
+		let current_module = get_current_module(pr_progress_percentage, start_times);
+		
+		if (!last_module) {
+			tag_current_module(current_module, start_times);
+		}
 		// update module progress bar if it has changed
 		if (last_module && (current_module != last_module)) {
 			update_mod_progress_bar(current_module);
-			refresh_tooltips();
+			tag_current_module(current_module, start_times);
 			elapsed_modules += last_module.duration * 60 * 1000;
 		}
 		// subtract module duration of elapsed modules
@@ -276,7 +272,6 @@ $(document).ready(function() {
 	
 	$('#start_button').click(function() {
 		window.requestAnimationFrame(step);
-		refresh_tooltips();
 		$('#pr_elapsed_time').css('display', 'block');
 	});
 });

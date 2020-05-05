@@ -1,3 +1,23 @@
+.container {
+	padding: 0;
+}
+#pr_container {
+	maring-bottom: 0;
+}
+#mod_container {
+	padding: 20px;
+	border-radius: 5px;
+	background-color: #eeeeee;
+}
+#module_arrow {
+	position: relative;
+	content: ' ';
+	width: 0px;
+	height: 0px;
+	border: 20px solid transparent;
+	margin-top: -20px;
+	transition: all 1s ease;
+}
 .indicator {
 	position: absolute;
 	left: 0%;
@@ -15,7 +35,7 @@
 .progress {
 	position: relative;
 	height: 30px !important;
-	margin: 40px 0px 40px 0px;
+	margin: 40px 0px 0px 0px;
 }
 .progress-bar {
 	padding: 5px;
@@ -32,14 +52,6 @@
 #time_counter {
 	height: 35px;
 	margin-bottom: 5px;
-}
-a#mod_tooltip:link,
-a#mod_tooltip:visited,
-a#mod_tooltip:hover,
-a#mod_tooltip:active {
-	text-decoration: none;
-	color: white;
-	cursor: default;
 }
 .jumbotron {
 	padding: 20px;
@@ -61,10 +73,9 @@ a#mod_tooltip:active {
 	vertical-align: bottom;
 	height: 20px;
 }
-#pr_labels,
-#mod_labels {
+#pr_labels {
 	margin-top: 15px;
 }
 #mod_progress {
-	margin-top: 65px;
+	margin-top: 25px;
 }
