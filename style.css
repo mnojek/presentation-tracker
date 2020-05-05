@@ -4,6 +4,9 @@
 .alert {
 	margin-top: 20px;
 }
+#lang_select {
+	margin-top: 20px;
+}
 #mod_container {
 	padding: 20px;
 	border-radius: 5px;

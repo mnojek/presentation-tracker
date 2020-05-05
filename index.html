@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Tytuł kursu</title>
+	<title>Course title</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -11,28 +11,36 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 	<script src="data.js"></script>
 	<script src="utils.js"></script>
+	<script src="language.js"></script>
 	<script src="scripts.js"></script>
 </head>
 <body>
 
 <div class="container">
-	<div id="wrong_time_warning" class="alert alert-warning"></div>
+	<div id="wrong_time_warning" class="alert alert-warning lang" key="wrong_pr_time_warn"></div>
 	
-	<div id="wrong_mod_time_warning" class="alert alert-warning"></div>
+	<div id="wrong_mod_time_warning" class="alert alert-warning lang" key="wrong_module_time_warn"></div>
 
 	<div class="jumbotron">
-		<h2 id="pr_title">Tytuł</h2>
-		<h3 id="pr_subtitle">Podtytuł</h3>
+		<div class="row">
+			<div class="col-lg-10">
+				<h2 id="pr_title">Title</h2>
+				<h3 id="pr_subtitle">Subtitle</h3>
+			</div>
+			<div class="col-lg-2">
+				<select id="lang_select" class="form-control" onchange="changeLanguage(this.value);"></select>
+			</div>
+		</div>
 	</div>
 
 	<table class="table">
 		<tbody>
 			<tr>
-				<td style="width: 10%">Czas trwania:</td>
+				<td class="lang" key="duration" style="width: 10%"></td>
 				<td id="pr_duration"></td>
 			</tr>
 			<tr>
-				<td style="width: 10%">Termin:</td>
+				<td class="lang" key="date" style="width: 10%"></td>
 				<td id="pr_time"></td>
 			</tr>
 		</tbody>
@@ -40,7 +48,7 @@
 
 	<div id="time_counter" class="row">
 		<div class="col-lg-2">
-			<button id="start_button" type="button" class="btn btn-success btn-block">Start</button>
+			<button id="start_button" type="button" class="btn btn-success btn-block lang" key="start-btn"></button>
 		</div>
 		<div class="col-lg-10">
 			<h5 id="pr_elapsed_time"></h5>

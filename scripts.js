@@ -8,7 +8,7 @@ function update_labels(){
 	$('#pr_title').text(data.presentation.title);
 	$('#pr_subtitle').text(data.presentation.subtitle);
 	$('#pr_duration').text(mins_to_time(data.presentation.duration));
-	let pr_date = new Date(data.presentation.date).toLocaleDateString('pl-PL', {  
+	let pr_date = new Date(data.presentation.date).toLocaleDateString(localStorage.getItem('language'), {  
 		day : 'numeric',
 		month : 'long',
 		year : 'numeric',
@@ -152,7 +152,7 @@ function validate_topics_duration(module){
 	
 	let topics_time_sum = module.topics.reduce((a, b) => a.duration + b.duration);
 	if (topics_time_sum != module.duration) {
-		$('#wrong_mod_time_warning').css('display', 'block').text(`Uwaga! Suma czasu tematów z modułu '${module.label}' jest różna od czasu trwania modułu`);
+		$('#wrong_mod_time_warning').css('display', 'block');
 	}
 }
 
@@ -168,7 +168,7 @@ function get_modules_start_times(){
 		validate_topics_duration(module);
 	}
 	if (modules_time_sum != data.presentation.duration){
-		$('#wrong_time_warning').css('display', 'block').text('Uwaga! Suma czasu wszystkich modułów jest różna od czasu trwania kursu. Popraw plik data.js');
+		$('#wrong_time_warning').css('display', 'block');
 	}
 	return start_times;
 }
