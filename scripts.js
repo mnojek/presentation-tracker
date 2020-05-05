@@ -2,7 +2,6 @@
 // startowanie i pauzowanie czasu
 // obsługa zbyt podobnych kolorów tematów
 // obsługa oddzielnych dni kursu (przełącznie pomiędzy innymi htmlami i danymi zależnymi od dnia)
-// glyphicon jest nad indicator
 
 function update_labels(){
 	$(document).attr("title", data.presentation.title);
@@ -19,70 +18,49 @@ function update_labels(){
 	$('#pr_time').text(pr_date);
 }
 
-function create_progress_bars(){
-	let first = true;
-	for (let module of data.presentation.modules){
-		let module_width = module.duration / data.presentation.duration * 100;
-		
-		let mod_label_div = $('<div/>', {
-			class: 'mod_label',
-			text: module.label + " ",
-			style: `width:${module_width}%;`
-		});
-		let badge = $('<span/>', {
-			class: 'badge',
-			text: module.duration + " min"
-		});
-		mod_label_div.append(badge);
-		mod_label_div.appendTo('#pr_labels');
-		
-		
-		let label = "";
-		let glyph = null;
-		if (module.type == "break") {
-			label = " ";
-			glyph = $('<span/>', {
-				class : 'glyphicon'
-			}).addClass('glyphicon-time');
-		}
-		else {
-			label = module.label + " ";
-		}
-		
-		
-		let progress_bar = $('<div/>', {
-			class: 'progress-bar',
-			style: `width:${module_width}%; background-color:${module.color} !important;`
-		});
-		
-		if (glyph) progress_bar.append(glyph);
-		progress_bar.appendTo('#pr_progress');
-		
-		if (first) {
-			first = false;
-			update_mod_progress_bar(module);
-		}
-	}
-}
-
-function create_break_progress_bar(module){
-	let break_label_div = $('<div/>', {
-		class: 'topic_label',
+function create_label(module, width, parent_div) {
+	let mod_label_div = $('<div/>', {
+		class: 'pr_label',
 		text: module.label + " ",
-		style: `width:100%;`
+		style: `width:${width}%;`
 	});
 	let badge = $('<span/>', {
 		class: 'badge',
 		text: module.duration + " min"
 	});
-	break_label_div.append(badge);
-	break_label_div.appendTo('#mod_labels');
+	mod_label_div.append(badge);
+	mod_label_div.appendTo(parent_div);
+}
+
+function create_progress_bars(){
+	for (let module of data.presentation.modules){
+		let module_width = module.duration / data.presentation.duration * 100;
+		create_label(module, module_width, '#pr_labels');
+
+		let glyph = $('<span/>', {
+			class : 'glyphicon'
+		}).addClass('glyphicon-time');
+
+		let progress_bar = $('<div/>', {
+			class: 'progress-bar',
+			style: `width:${module_width}%;
+					background-color:${module.color} !important;`
+		});
+		
+		if (module.type == "break") progress_bar.append(glyph);
+		progress_bar.appendTo('#pr_progress');
+	}
+}
+
+function create_break_progress_bar(module){
+	create_label(module, 100, mod_labels);
 	
 	let break_progress_bar = $('<div/>', {
 		class: 'progress-bar',
-		style: `width:100%; background-color: #cccccc !important;`
+		style: `width:100%;
+				background-color: #cccccc !important;`
 	});
-	glyph = $('<span/>', {
+	let glyph = $('<span/>', {
 		class : 'glyphicon'
 	}).addClass('glyphicon-time');
 	break_progress_bar.append(glyph);
@@ -90,24 +68,19 @@ function create_break_progress_bar(module){
 }
 
 function create_mod_progress_bars(module){
+	if (module.type == "break") {
+		create_break_progress_bar(module);
+		return;
+	}
+	// only module type modules have topics
 	for (let topic of module.topics){
 		let topic_width = topic.duration / module.duration * 100;
-		
-		let topic_label_div = $('<div/>', {
-			class: 'topic_label',
-			text: topic.label + " ",
-			style: `width:${topic_width}%;`
-		});
-		let badge = $('<span/>', {
-			class: 'badge',
-			text: topic.duration + " min"
-		});
-		topic_label_div.append(badge);
-		topic_label_div.appendTo('#mod_labels');
-		
+		create_label(topic, topic_width, '#mod_labels');
+
 		let topic_progress_bar = $('<div/>', {
 			class: 'progress-bar',
-			style: `width:${topic_width}%; background-color:${getRandomColor(module.color)} !important;`
+			style: `width:${topic_width}%; 
+					background-color:${getRandomColor(module.color)} !important;`
 		});
 		topic_progress_bar.appendTo('#mod_progress');
 	}
@@ -117,40 +90,35 @@ function tag_current_module(module, start_times) {
 	let idx = data.presentation.modules.indexOf(module);
 	// calculate new tag position as half of current module width
 	// and adjust it by tag width
-	let does_next_idx_exists = typeof start_times[idx+1] === 'undefined';
-	let next_mod_start_time = does_next_idx_exists ? 100 : start_times[idx+1];
+	let next_mod_exists = typeof start_times[idx+1] === 'undefined';
+	let next_mod_start_time = next_mod_exists ? 100 : start_times[idx+1];
 	let new_tag_position = next_mod_start_time - ((next_mod_start_time - start_times[idx]) / 2);
 	let tag_width = 20;
 	$('#module_arrow').css('left', `${new_tag_position}%`).css('margin-left', `-${tag_width}px`);
-	// show tag by changing its border-color to same as module container
-	let tag_color = $('#mod_container').css('background-color');
-	$('#module_arrow').css('border-bottom-color', `${tag_color}`);
 }
 
 function update_mod_progress_bar(module) {
 	$('#mod_progress').children('.progress-bar').remove();
 	$('#mod_labels').children().remove();
-	if (module.type == "break") create_break_progress_bar(module);
-	else create_mod_progress_bars(module);
+	create_mod_progress_bars(module);
 }
 
 function blink_before_module_ends(progress, start_times, blink_flags) {
-	let first_blink = -6,
-		blink_timeouts = [3000, 2000, 1000],
+	let first_blink = -6,  // seconds before module ends
+		blink_timeouts = [3000, 2000, 1000],  // array with blink times after first blink
 		blink_color = 'green',
 		blink_duration = 500; // in ms
 	for (var i = 1; i < start_times.length; i++){
 		if (blink_flags[i] == true) continue; // do not blink for the first module
 		let blink_time = ((start_times[i] / 100 * data.presentation.duration * 60) + first_blink) / 60 / data.presentation.duration * 100;  // calculate blink time as % of module progress
-		if (progress >= blink_time){
-			$('body').effect("highlight", {color: 'green'}, 500);
-			let timeout_ms = 0;
-			for (let blink_timeout of blink_timeouts) {
-				timeout_ms += blink_timeout;
-				setTimeout(function(){ $('body').effect("highlight", {color: blink_color}, blink_duration); }, timeout_ms);
-			}
-			blink_flags[i] = true;
+		if (progress < blink_time) return;
+		$('body').effect("highlight", {color: 'green'}, 500);
+		let timeout_ms = 0;
+		for (let blink_timeout of blink_timeouts) {
+			timeout_ms += blink_timeout;
+			setTimeout(function(){ $('body').effect("highlight", {color: blink_color}, blink_duration); }, timeout_ms);
 		}
+		blink_flags[i] = true;
 	}
 }
 
@@ -180,14 +148,11 @@ function update_elapsed_time(elapsed_time) {
 }
 
 function validate_topics_duration(module){
-	if (module.type != 'break') {
-		let topics_time_sum = 0;
-		for (let topic of module.topics) {
-			topics_time_sum += topic.duration;
-		}
-		if (topics_time_sum != module.duration) {
-			$('#wrong_mod_time_warning').css('display', 'block').text(`Uwaga! Suma czasu tematów z modułu '${module.label}' jest różna od czasu trwania modułu`);
-		}
+	if (module.type == 'break') return;  // break type modules have no topics
+	
+	let topics_time_sum = module.topics.reduce((a, b) => a.duration + b.duration);
+	if (topics_time_sum != module.duration) {
+		$('#wrong_mod_time_warning').css('display', 'block').text(`Uwaga! Suma czasu tematów z modułu '${module.label}' jest różna od czasu trwania modułu`);
 	}
 }
 
@@ -222,7 +187,9 @@ $(document).ready(function() {
 
 	update_labels();
 	create_progress_bars();
+	update_mod_progress_bar(data.presentation.modules[0]);
 	var start_times = get_modules_start_times();
+	tag_current_module(data.presentation.modules[0], start_times);
 	var blink_flags = Array(start_times.length).fill(false);
 	blink_flags[0] = true;
 
@@ -242,10 +209,7 @@ $(document).ready(function() {
 		
 		blink_before_module_ends(pr_progress_percentage, start_times, blink_flags);
 		let current_module = get_current_module(pr_progress_percentage, start_times);
-		
-		if (!last_module) {
-			tag_current_module(current_module, start_times);
-		}
+
 		// update module progress bar if it has changed
 		if (last_module && (current_module != last_module)) {
 			update_mod_progress_bar(current_module);
@@ -265,7 +229,6 @@ $(document).ready(function() {
 		last_module = current_module;
 		
 		if (pr_progress_percentage >= 100) {
-			clear_tooltips();
 			return;
 		}
 	};

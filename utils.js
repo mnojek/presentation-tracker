@@ -20,5 +20,5 @@ function mins_to_time(mins) {
 	if (rhours > 0){
 		return rhours + " h " + rminutes + " min"
 	}
-	return rminutes + "min";
+	return rminutes + " min";
 }
