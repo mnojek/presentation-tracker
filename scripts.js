@@ -228,13 +228,15 @@ $(document).ready(function() {
 		
 		last_module = current_module;
 		
-		if (pr_progress_percentage >= 100) {
+		if (pr_progress_percentage >= 101) {
+			$('.indicator').css('display', 'none');
 			return;
 		}
 	};
 	
 	$('#start_button').click(function() {
 		window.requestAnimationFrame(step);
+		$('.indicator').css('display', 'block');
 		$('#pr_elapsed_time').css('display', 'block');
 	});
 });

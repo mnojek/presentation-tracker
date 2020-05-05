@@ -4,6 +4,11 @@
 .alert {
 	margin-top: 20px;
 }
+select:focus{
+    border-color: gray !important;
+    outline: none;
+	box-shadow: 0 0 2px gray !important;
+}
 #lang_select {
 	margin-top: 20px;
 }
@@ -24,11 +29,14 @@
 }
 .indicator {
 	position: absolute;
+	display: none;
 	left: 0%;
 	width: 2px;
 	height: 100%;
-	background-color: #222222;
+	background-color: #fff;
+	box-shadow: 0px 0px 5px 2px #fff;
 	z-index: 1;
+	margin-left: -2px;
 }
 .elapsed_part {
 	position: absolute;
