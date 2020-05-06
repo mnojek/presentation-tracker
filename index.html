@@ -16,41 +16,43 @@
 </head>
 <body>
 
-<div class="container">
+<div id="main_container" class="container">
 	<div id="wrong_time_warning" class="alert alert-warning lang" key="wrong_pr_time_warn"></div>
 	
 	<div id="wrong_mod_time_warning" class="alert alert-warning lang" key="wrong_module_time_warn"></div>
 
 	<div class="jumbotron">
 		<div class="row">
-			<div class="col-lg-10">
+			<div class="col-md-10 col-xs-7">
 				<h2 id="pr_title">Title</h2>
 				<h3 id="pr_subtitle">Subtitle</h3>
 			</div>
-			<div class="col-lg-2">
+			<div class="col-md-2 col-xs-5">
 				<select id="lang_select" class="form-control" onchange="changeLanguage(this.value);"></select>
 			</div>
 		</div>
 	</div>
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<td class="lang" key="duration" style="width: 10%"></td>
-				<td id="pr_duration"></td>
-			</tr>
-			<tr>
-				<td class="lang" key="date" style="width: 10%"></td>
-				<td id="pr_time"></td>
-			</tr>
-		</tbody>
-	</table>
+	<div class="table-responsive text-nowrap">
+		<table class="table">
+			<tbody>
+				<tr>
+					<td class="lang" key="duration" style="width: 10%"></td>
+					<td id="pr_duration"></td>
+				</tr>
+				<tr>
+					<td class="lang" key="date" style="width: 10%"></td>
+					<td id="pr_time"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 
 	<div id="time_counter" class="row">
-		<div class="col-lg-2">
+		<div class="col-md-2 col-xs-6">
 			<button id="start_button" type="button" class="btn btn-success btn-block lang" key="start-btn"></button>
 		</div>
-		<div class="col-lg-10">
+		<div class="col-md-10 col-xs-6">
 			<h5 id="pr_elapsed_time"></h5>
 		</div>
 	</div>

@@ -2,6 +2,13 @@
 // startowanie i pauzowanie czasu
 // obsługa zbyt podobnych kolorów tematów
 // obsługa oddzielnych dni kursu (przełącznie pomiędzy innymi htmlami i danymi zależnymi od dnia)
+// dodaj glyph do przycisku start
+// dodaj zmianę przycisku start w zółty przycisk pauzy po jego uruchomieniu
+// dodać group button do start (stop), który jest disabled, jeśli czas nie wystartował.
+// dodaj glyph do przycisku pauzy, stopu
+// popraw wyświetlanie badge na małych urządzeniach
+// przesuwanie tekstu, który się nie mieści (szczególnie widok mobile)
+
 
 function update_labels(){
 	$(document).attr("title", data.presentation.title);
