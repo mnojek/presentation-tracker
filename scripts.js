@@ -190,6 +190,14 @@ function move_mod_indicator(progress) {
 	$('#mod_elapsed_part').css('width', `${progress}%`);
 }
 
+function toggleStartButton(button) {
+	$(button).toggleClass('btn-success');
+	$(button).toggleClass('btn-warning');
+	let lang = localStorage.getItem('language');
+	$(button).toggleHtml(getLanguagePhrase(lang, 'pause-btn'), getLanguagePhrase(lang, 'start-btn'));
+	$(button).toggleKey('start-btn', 'pause-btn');
+}
+
 $(document).ready(function() {
 
 	update_labels();
@@ -245,5 +253,6 @@ $(document).ready(function() {
 		window.requestAnimationFrame(step);
 		$('.indicator').css('display', 'block');
 		$('#pr_elapsed_time').css('display', 'block');
+		toggleStartButton(this);
 	});
 });

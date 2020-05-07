@@ -22,3 +22,12 @@ function mins_to_time(mins) {
 	}
 	return rminutes + " min";
 }
+
+$.fn.extend({
+	toggleHtml: function(a, b){
+		return this.html(this.html() == b ? a : b);
+	},
+	toggleKey: function(a, b){
+		return this.attr('key', this.attr('key') == b ? a : b);
+	}
+});
