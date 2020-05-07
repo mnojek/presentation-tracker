@@ -25,14 +25,14 @@ let langMapping = {
 window.onload = initialize;
 
 function initialize() {
-	var $dropdown = $("#lang_select");    
+	var $dropdown = $("#lang-select");    
 	$.each(langMapping, function(key, value) {
 		$dropdown.
 			append($("<option/>").
 			val(key).
 			text(value));
 	});
-	let lang = $("#lang_select").val();
+	let lang = $("#lang-select").val();
 	localStorage.setItem('language', lang);
 	changeLanguage(lang);
 }
@@ -42,14 +42,14 @@ function changeLanguage(lang){
 	$('.lang').each(function(index,element){
 		$(this).text(arrLang[lang][$(this).attr('key')]);
 	});
-	let pr_date = new Date(data.presentation.date).toLocaleDateString(lang, {  
+	let prDate = new Date(data.presentation.date).toLocaleDateString(lang, {  
 		day : 'numeric',
 		month : 'long',
 		year : 'numeric',
 		hour: '2-digit',
 		minute: '2-digit'
 	});
-	$('#pr_time').text(pr_date);
+	$('#pr-time').text(prDate);
 }
 
 function getLanguagePhrase(lang, key) {

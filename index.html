@@ -16,19 +16,19 @@
 </head>
 <body>
 
-<div id="main_container" class="container">
-	<div id="wrong_time_warning" class="alert alert-warning lang" key="wrong_pr_time_warn"></div>
+<div id="main-container" class="container">
+	<div id="wrong-time-warning" class="alert alert-warning lang" key="wrong_pr_time_warn"></div>
 	
-	<div id="wrong_mod_time_warning" class="alert alert-warning lang" key="wrong_module_time_warn"></div>
+	<div id="wrong-mod-time-warning" class="alert alert-warning lang" key="wrong_module_time_warn"></div>
 
 	<div class="jumbotron">
 		<div class="row">
 			<div class="col-md-10 col-xs-7">
-				<h2 id="pr_title">Title</h2>
-				<h3 id="pr_subtitle">Subtitle</h3>
+				<h2 id="pr-title">Title</h2>
+				<h3 id="pr-subtitle">Subtitle</h3>
 			</div>
 			<div class="col-md-2 col-xs-5">
-				<select id="lang_select" class="form-control" onchange="changeLanguage(this.value);"></select>
+				<select id="lang-select" class="form-control" onchange="changeLanguage(this.value);"></select>
 			</div>
 		</div>
 	</div>
@@ -38,42 +38,42 @@
 			<tbody>
 				<tr>
 					<td class="lang" key="duration" style="width: 10%"></td>
-					<td id="pr_duration"></td>
+					<td id="pr-duration"></td>
 				</tr>
 				<tr>
 					<td class="lang" key="date" style="width: 10%"></td>
-					<td id="pr_time"></td>
+					<td id="pr-time"></td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
 
-	<div id="time_counter" class="row">
+	<div id="time-counter" class="row">
 		<div class="col-md-2 col-xs-6">
-			<button id="start_button" type="button" class="btn btn-success btn-block lang" key="start-btn"></button>
+			<button id="start-button" type="button" class="btn btn-success btn-block lang" key="start-btn"></button>
 		</div>
 		<div class="col-md-10 col-xs-6">
-			<h5 id="pr_elapsed_time"></h5>
-		</div>
-	</div>
-	
-	<div id="pr_container" class="container">
-		<div id="pr_labels"></div>
-		<div id="pr_progress" class="progress">
-			<div class="indicator" id="pr_indicator"></div>
-			<div class="elapsed_part" id="pr_elapsed_part"></div>
+			<h5 id="pr-elapsed-time"></h5>
 		</div>
 	</div>
 	
 	<div class="container">
-		<div id="module_arrow"></div>
+		<div id="pr-labels"></div>
+		<div id="pr-progress" class="progress">
+			<div id="pr-indicator" class="indicator"></div>
+			<div id="pr-elapsed-part" class="elapsed-part"></div>
+		</div>
 	</div>
 	
-	<div id="mod_container" class="container">
-		<div id="mod_labels"></div>
-		<div id="mod_progress" class="progress">
-			<div class="indicator" id="mod_indicator"></div>
-			<div class="elapsed_part" id="mod_elapsed_part"></div>
+	<div class="container">
+		<div id="module-arrow"></div>
+	</div>
+	
+	<div id="mod-container" class="container">
+		<div id="mod-labels"></div>
+		<div id="mod-progress" class="progress">
+			<div id="mod-indicator" class="indicator"></div>
+			<div id="mod-elapsed-part" class="elapsed-part"></div>
 		</div>
 	</div>
 	

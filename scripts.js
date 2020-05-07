@@ -2,32 +2,29 @@
 // startowanie i pauzowanie czasu
 // obsługa zbyt podobnych kolorów tematów
 // obsługa oddzielnych dni kursu (przełącznie pomiędzy innymi htmlami i danymi zależnymi od dnia)
-// dodaj glyph do przycisku start
-// dodaj zmianę przycisku start w zółty przycisk pauzy po jego uruchomieniu
 // dodać group button do start (stop), który jest disabled, jeśli czas nie wystartował.
-// dodaj glyph do przycisku pauzy, stopu
+// dodaj glyph do przycisków start, pauzy, stopu
 // popraw wyświetlanie badge na małych urządzeniach
 // przesuwanie tekstu, który się nie mieści (szczególnie widok mobile)
 
-
-function update_labels(){
+function updateLabels(){
 	$(document).attr("title", data.presentation.title);
-	$('#pr_title').text(data.presentation.title);
-	$('#pr_subtitle').text(data.presentation.subtitle);
-	$('#pr_duration').text(mins_to_time(data.presentation.duration));
-	let pr_date = new Date(data.presentation.date).toLocaleDateString(localStorage.getItem('language'), {  
+	$('#pr-title').text(data.presentation.title);
+	$('#pr-subtitle').text(data.presentation.subtitle);
+	$('#pr-duration').text(minsToTime(data.presentation.duration));
+	let prDate = new Date(data.presentation.date).toLocaleDateString(localStorage.getItem('language'), {  
 		day : 'numeric',
 		month : 'long',
 		year : 'numeric',
 		hour: '2-digit',
 		minute: '2-digit'
 	});
-	$('#pr_time').text(pr_date);
+	$('#pr-time').text(prDate);
 }
 
-function create_label(module, width, parent_div) {
-	let mod_label_div = $('<div/>', {
-		class: 'pr_label',
+function createLabel(module, width, parentDiv) {
+	let modLabelDiv = $('<div/>', {
+		class: 'pr-label',
 		text: module.label + " ",
 		style: `width:${width}%;`
 	});
@@ -35,34 +32,34 @@ function create_label(module, width, parent_div) {
 		class: 'badge',
 		text: module.duration + " min"
 	});
-	mod_label_div.append(badge);
-	mod_label_div.appendTo(parent_div);
+	modLabelDiv.append(badge);
+	modLabelDiv.appendTo(parentDiv);
 }
 
-function create_progress_bars(){
+function createProgressBars(){
 	for (let module of data.presentation.modules){
-		let module_width = module.duration / data.presentation.duration * 100;
-		create_label(module, module_width, '#pr_labels');
+		let moduleWidth = module.duration / data.presentation.duration * 100;
+		createLabel(module, moduleWidth, '#pr-labels');
 
 		let glyph = $('<span/>', {
 			class : 'glyphicon'
 		}).addClass('glyphicon-time');
 
-		let progress_bar = $('<div/>', {
+		let progressBar = $('<div/>', {
 			class: 'progress-bar',
-			style: `width:${module_width}%;
+			style: `width:${moduleWidth}%;
 					background-color:${module.color} !important;`
 		});
 		
-		if (module.type == "break") progress_bar.append(glyph);
-		progress_bar.appendTo('#pr_progress');
+		if (module.type == "break") progressBar.append(glyph);
+		progressBar.appendTo('#pr-progress');
 	}
 }
 
-function create_break_progress_bar(module){
-	create_label(module, 100, mod_labels);
+function createBreakProgressBar(module){
+	createLabel(module, 100, 'mod-labels');
 	
-	let break_progress_bar = $('<div/>', {
+	let breakProgressBar = $('<div/>', {
 		class: 'progress-bar',
 		style: `width:100%;
 				background-color: #cccccc !important;`
@@ -70,124 +67,124 @@ function create_break_progress_bar(module){
 	let glyph = $('<span/>', {
 		class : 'glyphicon'
 	}).addClass('glyphicon-time');
-	break_progress_bar.append(glyph);
-	break_progress_bar.appendTo('#mod_progress');
+	breakProgressBar.append(glyph);
+	breakProgressBar.appendTo('#mod-progress');
 }
 
-function create_mod_progress_bars(module){
+function createModProgressBars(module){
 	if (module.type == "break") {
-		create_break_progress_bar(module);
+		createBreakProgressBar(module);
 		return;
 	}
 	// only module type modules have topics
 	for (let topic of module.topics){
-		let topic_width = topic.duration / module.duration * 100;
-		create_label(topic, topic_width, '#mod_labels');
+		let topicWidth = topic.duration / module.duration * 100;
+		createLabel(topic, topicWidth, '#mod-labels');
 
-		let topic_progress_bar = $('<div/>', {
+		let topicProgressBar = $('<div/>', {
 			class: 'progress-bar',
-			style: `width:${topic_width}%; 
+			style: `width:${topicWidth}%; 
 					background-color:${getRandomColor(module.color)} !important;`
 		});
-		topic_progress_bar.appendTo('#mod_progress');
+		topicProgressBar.appendTo('#mod-progress');
 	}
 }
 
-function tag_current_module(module, start_times) {
+function tagCurrentModule(module, startTimes) {
 	let idx = data.presentation.modules.indexOf(module);
 	// calculate new tag position as half of current module width
 	// and adjust it by tag width
-	let next_mod_exists = typeof start_times[idx+1] === 'undefined';
-	let next_mod_start_time = next_mod_exists ? 100 : start_times[idx+1];
-	let new_tag_position = next_mod_start_time - ((next_mod_start_time - start_times[idx]) / 2);
-	let tag_width = 20;
-	$('#module_arrow').css('left', `${new_tag_position}%`).css('margin-left', `-${tag_width}px`);
+	let nextModExists = typeof startTimes[idx+1] === 'undefined';
+	let nextModStartTime = nextModExists ? 100 : startTimes[idx+1];
+	let newTagPosition = nextModStartTime - ((nextModStartTime - startTimes[idx]) / 2);
+	let tagWidth = 20;
+	$('#module-arrow').css('left', `${newTagPosition}%`).css('margin-left', `-${tagWidth}px`);
 }
 
-function update_mod_progress_bar(module) {
-	$('#mod_progress').children('.progress-bar').remove();
-	$('#mod_labels').children().remove();
-	create_mod_progress_bars(module);
+function updateModProgressBar(module) {
+	$('#mod-progress').children('.progress-bar').remove();
+	$('#mod-labels').children().remove();
+	createModProgressBars(module);
 }
 
-function blink_before_module_ends(progress, start_times, blink_flags) {
-	let first_blink = -6,  // seconds before module ends
-		blink_timeouts = [3000, 2000, 1000],  // array with blink times after first blink
-		blink_color = 'green',
-		blink_duration = 500; // in ms
-	for (var i = 1; i < start_times.length; i++){
-		if (blink_flags[i] == true) continue; // do not blink for the first module
-		let blink_time = ((start_times[i] / 100 * data.presentation.duration * 60) + first_blink) / 60 / data.presentation.duration * 100;  // calculate blink time as % of module progress
-		if (progress < blink_time) return;
+function blinkBeforeModuleEnds(progress, startTimes, blinkFlags) {
+	let firstBlink = -6,  // seconds before module ends
+		blinkTimeouts = [3000, 2000, 1000],  // array with blink times after first blink
+		blinkColor = 'green',
+		blinkDuration = 500; // in ms
+	for (var i = 1; i < startTimes.length; i++){
+		if (blinkFlags[i] == true) continue; // do not blink for the first module
+		let blinkTime = ((startTimes[i] / 100 * data.presentation.duration * 60) + firstBlink) / 60 / data.presentation.duration * 100;  // calculate blink time as % of module progress
+		if (progress < blinkTime) return;
 		$('body').effect("highlight", {color: 'green'}, 500);
-		let timeout_ms = 0;
-		for (let blink_timeout of blink_timeouts) {
-			timeout_ms += blink_timeout;
-			setTimeout(function(){ $('body').effect("highlight", {color: blink_color}, blink_duration); }, timeout_ms);
+		let timeout = 0;
+		for (let blinkTimeout of blinkTimeouts) {
+			timeout += blinkTimeout;
+			setTimeout(function(){ $('body').effect("highlight", {color: blinkColor}, blinkDuration); }, timeout);
 		}
-		blink_flags[i] = true;
+		blinkFlags[i] = true;
 	}
 }
 
-function get_current_module(progress, start_times){
-	let current_module = null;
-	for (var i = 0; i < start_times.length; i++){
-		if (progress >= start_times[i]) current_module = data.presentation.modules[i];
+function getCurrentModule(progress, startTimes){
+	let currentModule = null;
+	for (var i = 0; i < startTimes.length; i++){
+		if (progress >= startTimes[i]) currentModule = data.presentation.modules[i];
 		else break;
 	}
-	return current_module;
+	return currentModule;
 }
 
-function calculate_progress(elapsed_time, duration) {
-	let duration_ms = duration * 60 * 1000;
-	let progress = (elapsed_time / duration_ms * 100);
+function calculateProgress(elapsedTime, duration) {
+	let duration_ms = duration * 60 * 1000; // change to ms
+	let progress = (elapsedTime / duration_ms * 100);
 	return progress;
 }
 
-function update_elapsed_time(elapsed_time) {
-	let pr_elapsed_time = new Date(0);
-	pr_elapsed_time.setMilliseconds(elapsed_time - (60 * 60 * 1000));
-	let iso_elapsed_time = pr_elapsed_time.toISOString();
-	let formattedTime = pr_elapsed_time.getHours() > 0
-		? iso_elapsed_time.substr(11, 8) // display hours and minutes
-		: iso_elapsed_time.substr(14, 5); // display only minutes
-	$('#pr_elapsed_time').text(formattedTime);
+function updateElapsedTime(elapsedTime) {
+	let prElapsedTime = new Date(0);
+	prElapsedTime.setMilliseconds(elapsedTime - (60 * 60 * 1000));
+	let isoElapsedTime = prElapsedTime.toISOString();
+	let formattedTime = prElapsedTime.getHours() > 0
+		? isoElapsedTime.substr(11, 8) // display hours and minutes
+		: isoElapsedTime.substr(14, 5); // display only minutes
+	$('#pr-elapsed-time').text(formattedTime);
 }
 
-function validate_topics_duration(module){
+function validateTopicsDuration(module){
 	if (module.type == 'break') return;  // break type modules have no topics
 	
-	let topics_time_sum = module.topics.reduce((a, b) => a.duration + b.duration);
-	if (topics_time_sum != module.duration) {
-		$('#wrong_mod_time_warning').css('display', 'block');
+	let topicsTimeSum = module.topics.reduce((a, b) => a.duration + b.duration);
+	if (topicsTimeSum != module.duration) {
+		$('#wrong-mod-time-warning').css('display', 'block');
 	}
 }
 
-function get_modules_start_times(){
-	let starting_time = 0,
-		start_times = [],
-		modules_time_sum = 0;
+function getModulesStartTimes(){
+	let startingTime = 0,
+		startTimes = [],
+		modulesTimeSum = 0;
 	for (let module of data.presentation.modules){
-		start_times.push(starting_time)
-		starting_time += module.duration / data.presentation.duration * 100;
-		modules_time_sum += module.duration;
+		startTimes.push(startingTime)
+		startingTime += module.duration / data.presentation.duration * 100;
+		modulesTimeSum += module.duration;
 		
-		validate_topics_duration(module);
+		validateTopicsDuration(module);
 	}
-	if (modules_time_sum != data.presentation.duration){
-		$('#wrong_time_warning').css('display', 'block');
+	if (modulesTimeSum != data.presentation.duration){
+		$('#wrong-time-warning').css('display', 'block');
 	}
-	return start_times;
+	return startTimes;
 }
 
-function move_pr_indicator(progress) {
-	$('#pr_indicator').css('left', `${progress}%`);
-	$('#pr_elapsed_part').css('width', `${progress}%`);
+function movePrIndicator(progress) {
+	$('#pr-indicator').css('left', `${progress}%`);
+	$('#pr-elapsed-part').css('width', `${progress}%`);
 }
 
-function move_mod_indicator(progress) {
-	$('#mod_indicator').css('left', `${progress}%`);
-	$('#mod_elapsed_part').css('width', `${progress}%`);
+function moveModIndicator(progress) {
+	$('#mod-indicator').css('left', `${progress}%`);
+	$('#mod-elapsed-part').css('width', `${progress}%`);
 }
 
 function toggleStartButton(button) {
@@ -200,59 +197,59 @@ function toggleStartButton(button) {
 
 $(document).ready(function() {
 
-	update_labels();
-	create_progress_bars();
-	update_mod_progress_bar(data.presentation.modules[0]);
-	var start_times = get_modules_start_times();
-	tag_current_module(data.presentation.modules[0], start_times);
-	var blink_flags = Array(start_times.length).fill(false);
-	blink_flags[0] = true;
+	updateLabels();
+	createProgressBars();
+	updateModProgressBar(data.presentation.modules[0]);
+	var startTimes = getModulesStartTimes();
+	tagCurrentModule(data.presentation.modules[0], startTimes);
+	var blinkFlags = Array(startTimes.length).fill(false);
+	blinkFlags[0] = true;
 
 	var start = null,
-		last_module = null,
-		elapsed_modules = 0;
+		lastModule = null,
+		elapsedModules = 0;
 	
 	function step(timestamp) {
 		if (!start) start = timestamp;
-		let elapsed_time = timestamp - start;
+		let elapsedTime = timestamp - start;
 		
-		update_elapsed_time(elapsed_time);
+		updateElapsedTime(elapsedTime);
 		
 		// calculate the position of presentation progress indicator
-		let pr_progress_percentage = calculate_progress(elapsed_time, data.presentation.duration);
-		move_pr_indicator(pr_progress_percentage);
+		let prProgressPercentage = calculateProgress(elapsedTime, data.presentation.duration);
+		movePrIndicator(prProgressPercentage);
 		
-		blink_before_module_ends(pr_progress_percentage, start_times, blink_flags);
-		let current_module = get_current_module(pr_progress_percentage, start_times);
+		blinkBeforeModuleEnds(prProgressPercentage, startTimes, blinkFlags);
+		let currentModule = getCurrentModule(prProgressPercentage, startTimes);
 
 		// update module progress bar if it has changed
-		if (last_module && (current_module != last_module)) {
-			update_mod_progress_bar(current_module);
-			tag_current_module(current_module, start_times);
-			elapsed_modules += last_module.duration * 60 * 1000;
+		if (lastModule && (currentModule != lastModule)) {
+			updateModProgressBar(currentModule);
+			tagCurrentModule(currentModule, startTimes);
+			elapsedModules += lastModule.duration * 60 * 1000;
 		}
 		// subtract module duration of elapsed modules
-		let mod_progress = elapsed_time - elapsed_modules;
+		let modProgress = elapsedTime - elapsedModules;
 		
 		// calculate the position of module progress indicator
-		let mod_progress_percentage = calculate_progress(mod_progress, current_module.duration);
-		move_mod_indicator(mod_progress_percentage);
+		let modProgressPercentage = calculateProgress(modProgress, currentModule.duration);
+		moveModIndicator(modProgressPercentage);
 
-		let pr_duration_ms = data.presentation.duration * 60 * 1000;
-		if (elapsed_time < pr_duration_ms) window.requestAnimationFrame(step);
+		let prDuration = data.presentation.duration * 60 * 1000;  // change to ms
+		if (elapsedTime < prDuration) window.requestAnimationFrame(step);
 		
-		last_module = current_module;
+		lastModule = currentModule;
 		
-		if (pr_progress_percentage >= 101) {
+		if (prProgressPercentage >= 101) {
 			$('.indicator').css('display', 'none');
 			return;
 		}
 	};
 	
-	$('#start_button').click(function() {
+	$('#start-button').click(function() {
 		window.requestAnimationFrame(step);
 		$('.indicator').css('display', 'block');
-		$('#pr_elapsed_time').css('display', 'block');
+		$('#pr-elapsed-time').css('display', 'block');
 		toggleStartButton(this);
 	});
 });

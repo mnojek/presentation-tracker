@@ -1,4 +1,4 @@
-#main_container {
+#main-container {
 	padding: 0 20px 0 20px;
 }
 .container {
@@ -12,15 +12,15 @@ select:focus{
     outline: none;
 	box-shadow: 0 0 2px gray !important;
 }
-#lang_select {
+#lang-select {
 	margin-top: 20px;
 }
-#mod_container {
+#mod-container {
 	padding: 20px;
 	border-radius: 5px;
 	background-color: #eee;
 }
-#module_arrow {
+#module-arrow {
 	position: relative;
 	content: ' ';
 	width: 0px;
@@ -41,7 +41,7 @@ select:focus{
 	z-index: 1;
 	margin-left: -2px;
 }
-.elapsed_part {
+.elapsed-part {
 	position: absolute;
 	opacity: 0.7;
 	height: 100%;
@@ -58,14 +58,14 @@ select:focus{
 	font-weight: bold;
 	font-size: 14px;
 }
-#wrong_time_warning,
-#wrong_mod_time_warning {
+#wrong-time-warning,
+#wrong-mod-time-warning {
 	display: none;
 }
-#pr_elapsed_time {
+#pr-elapsed-time {
 	display: none;
 }
-#time_counter {
+#time-counter {
 	height: 35px;
 	margin-bottom: 5px;
 }
@@ -83,7 +83,7 @@ select:focus{
 .table-responsive {
 	border: 0;
 }
-.pr_label {
+.pr-label {
 	float: left;
 	text-align: center;
 	font-weight: bold;
@@ -91,9 +91,9 @@ select:focus{
 	vertical-align: bottom;
 	height: 20px;
 }
-#pr_labels {
+#pr-labels {
 	margin-top: 15px;
 }
-#mod_progress {
+#mod-progress {
 	margin-top: 25px;
 }

@@ -12,7 +12,7 @@ function getRandomColor(color) {
 	return result;
 }
 
-function mins_to_time(mins) {
+function minsToTime(mins) {
 	let hours = (mins / 60);
 	let rhours = Math.floor(hours);
 	let minutes = (hours - rhours) * 60;
