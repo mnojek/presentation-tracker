@@ -6,6 +6,8 @@
 // dodaj glyph do przycisków start, pauzy, stopu
 // popraw wyświetlanie badge na małych urządzeniach
 // przesuwanie tekstu, który się nie mieści (szczególnie widok mobile)
+// podświetlenie progress barów na hover
+// fix hover over progress-bar
 
 function updateLabels(){
 	$(document).attr("title", data.presentation.title);

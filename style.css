@@ -58,6 +58,10 @@ select:focus{
 	font-weight: bold;
 	font-size: 14px;
 }
+.progress-bar:hover {
+	opacity: 0.7;
+	transition: all 0.1s linear;
+}
 #wrong-time-warning,
 #wrong-mod-time-warning {
 	display: none;
