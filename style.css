@@ -101,3 +101,6 @@ select:focus{
 #mod-progress {
 	margin-top: 25px;
 }
+.btn {
+	min-width: 100px;
+}

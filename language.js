@@ -4,6 +4,7 @@ let arrLang = {
 		"date" : "Termin:",
 		"start-btn": "Start",
 		"pause-btn": "Pauza",
+		"stop-btn": "Stop!",
 		"wrong_module_time_warn": "Uwaga! Suma czasu tematów modułu jest różna od czasu trwania modułu",
 		"wrong_pr_time_warn": "Uwaga! Suma czasu wszystkich modułów jest różna od czasu trwania kursu. Popraw plik \"data.js\""
 	},
@@ -12,6 +13,7 @@ let arrLang = {
 		"date" : "Date:",
 		"start-btn": "Start",
 		"pause-btn": "Pause",
+		"stop-btn": "Stop",
 		"wrong_module_time_warn": "Warning! Duration of all topics from module does not equal module duration",
 		"wrong_pr_time_warn": "Warning! Duration of all modules does not equal presentation duration. Fix file 'data.js'"
 	}

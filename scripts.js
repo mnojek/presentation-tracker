@@ -204,8 +204,8 @@ $(document).ready(function() {
 	updateModProgressBar(data.presentation.modules[0]);
 	var startTimes = getModulesStartTimes();
 	tagCurrentModule(data.presentation.modules[0], startTimes);
-	var blinkFlags = Array(startTimes.length).fill(false);
-	blinkFlags[0] = true;
+	// blinkFlags = Array(startTimes.length).fill(false);
+	// blinkFlags[0] = true;
 
 	var start = null,
 		lastModule = null,
@@ -221,7 +221,7 @@ $(document).ready(function() {
 		let prProgressPercentage = calculateProgress(elapsedTime, data.presentation.duration);
 		movePrIndicator(prProgressPercentage);
 		
-		blinkBeforeModuleEnds(prProgressPercentage, startTimes, blinkFlags);
+		// blinkBeforeModuleEnds(prProgressPercentage, startTimes, blinkFlags);
 		let currentModule = getCurrentModule(prProgressPercentage, startTimes);
 
 		// update module progress bar if it has changed
