@@ -2,11 +2,9 @@
 // startowanie i pauzowanie czasu
 // obsługa zbyt podobnych kolorów tematów
 // obsługa oddzielnych dni kursu (przełącznie pomiędzy innymi htmlami i danymi zależnymi od dnia)
-// dodać group button do start (stop), który jest disabled, jeśli czas nie wystartował.
 // dodaj glyph do przycisków start, pauzy, stopu
 // popraw wyświetlanie badge na małych urządzeniach
 // przesuwanie tekstu, który się nie mieści (szczególnie widok mobile)
-// podświetlenie progress barów na hover
 // fix hover over progress-bar
 
 function updateLabels(){

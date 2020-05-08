@@ -4,7 +4,7 @@ let arrLang = {
 		"date" : "Termin:",
 		"start-btn": "Start",
 		"pause-btn": "Pauza",
-		"stop-btn": "Stop!",
+		"stop-btn": "Stop",
 		"wrong_module_time_warn": "Uwaga! Suma czasu tematów modułu jest różna od czasu trwania modułu",
 		"wrong_pr_time_warn": "Uwaga! Suma czasu wszystkich modułów jest różna od czasu trwania kursu. Popraw plik \"data.js\""
 	},
