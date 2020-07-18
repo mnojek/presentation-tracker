@@ -1,62 +1,62 @@
 var data = 
 {
 	"presentation": {
-		"title": "Przykładowy kurs",
-		"subtitle": "To jest skrócony opis kursu",
-		"duration": 5,
+		"title": "A Very Interesting Presentation",
+		"subtitle": "And its not less interesting subtitle",
+		"duration": 15,
 		"date": "2020-05-03T17:30:00",
 		"modules": [
 			{
-				"label": "Moduł 1",
-				"duration": 1,
+				"label": "Module 1",
+				"duration": 3,
 				"color": "#007bff",
 				"type": "module",
 				"topics": [
 					{	
-						"label": "Temat 1",
-						"duration": 0.3
+						"label": "Topic 1",
+						"duration": 1
 					},
 					{	
-						"label": "Temat 2",
-						"duration": 0.7
+						"label": "Topic 2",
+						"duration": 2
 					}
 				]
 			},
 			{
-				"label": "Moduł 2",
-				"duration": 2,
+				"label": "Module 2",
+				"duration": 6,
 				"color": "#dc3545",
 				"type": "module",
 				"topics": [
 					{	
-						"label": "Temat 1",
-						"duration": 1.2
+						"label": "Topic 1",
+						"duration": 4
 					},
 					{	
-						"label": "Temat 2",
-						"duration": 0.8
+						"label": "Topic 2",
+						"duration": 2
 					}
 				]
 			},
 			{
-				"label": "Przerwa",
-				"duration": 1,
+				"label": "Break",
+				"duration": 3,
 				"color": "#cccccc",
 				"type": "break"
 			},
 			{
-				"label": "Moduł 3",
-				"duration": 1,
+				"label": "Module 3",
+				"duration": 3,
 				"color": "#ffc107",
 				"type": "module",
 				"topics": [
 					{	
-						"label": "Temat 1",
-						"duration": 0.4
+						"label": "Topic 1",
+						"duration": 1.5
 					},
 					{	
-						"label": "Temat 2",
-						"duration": 0.6
+						"label": "Topic 2",
+						"duration": 1.5
 					}
 				]
 			}
