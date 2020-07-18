@@ -24,3 +24,7 @@ Languages
 ---------
 The application supports different languages. Currently it has translations for the UI elements in Polish and English.
 Additional languages can be easily added in `language.js` file. the language can be changed by dropdown list in the top right corner of the application.
+
+Screenshot
+----------
+![screenshot](screenshot.jpg)
